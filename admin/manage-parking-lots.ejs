@@ -1,0 +1,45 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Manage Parking Lots</title>  
+</head>  
+<body>  
+    <h1>Manage Parking Lots</h1>  
+    <table>  
+        <thead>  
+            <tr>  
+                <th>Parking Lot Name</th>  
+                <th>Total Spots</th>  
+                <th>Available Car Spots</th>  
+                <th>Available Motorcycle Spots</th>  
+                <th>Action</th>  
+            </tr>  
+        </thead>  
+        <tbody>  
+            <% parkingLots.forEach(lot => { %>  
+                <tr>  
+                    <td><%= lot.name %></td>  
+                    <td><%= lot.totalSpots %></td>  
+                    <td><%= lot.carAvailableSpot %></td>  
+                    <td><%= lot.motorcycleAvailableSpot %></td>  
+                    <td>  
+                        <form action="/admin/deduct-spot" method="POST" style="display:inline;">  
+                            <input type="hidden" name="parkingLotId" value="<%= lot.id %>">  
+                            <input type="number" name="spotsToDeduct" min="1" max="<%= Math.max(0, lot.carAvailableSpot) %>" required>  
+                            <button type="submit">Deduct Car Spot</button>  
+                        </form>  
+                        <form action="/admin/deduct-motorcycle-spot" method="POST" style="display:inline;">  
+                            <input type="hidden" name="parkingLotId" value="<%= lot.id %>">  
+                            <input type="number" name="motorcycleSpotsToDeduct" min="1" max="<%= Math.max(0, lot.motorcycleAvailableSpot) %>" required>  
+                            <button type="submit">Deduct Motorcycle Spot</button>  
+                        </form>  
+                    </td>  
+                </tr>  
+            <% }) %>  
+        </tbody>  
+    </table>  
+    <a href="/admin/dashboard">Back to Admin Dashboard</a>  
+</body>  
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>  
+<html lang="en">  
+  <head>  
+    <meta charset="UTF-8" />  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
+    <title>Parking Dashboard</title>  
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />  
+    <link  
+      href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css"  
+      rel="stylesheet"  
+    />  
+    <style>  
+      * {  
+    margin: 0;  
+    padding: 0;  
+    box-sizing: border-box;  
+}  
+
+body {  
+    font-family: Arial, sans-serif;  
+    background-color: #f4f4f4;  
+    color: #333;  
+    line-height: 1.6;  
+}  
+
+.container {  
+    max-width: 1200px; /* Max width for larger screens */  
+    margin: 0 auto; /* Center the container */  
+    padding: 20px; /* Padding around the content */  
+    text-align: center; /* Center all text in the container */ /* Added for centering */  
+}  
+
+h1,  
+h2 {  
+    text-align: center;  
+    margin-bottom: 20px;  
+    color: #4a4a4a;  
+}  
+
+nav {  
+    display: flex;  
+    justify-content: center;  
+    padding: 10px 0;  
+    background-color: #007bff;  
+    color: #fff;  
+}  
+
+nav a {  
+    color: white;  
+    margin: 0 15px;  
+    text-decoration: none;  
+    font-weight: bold;  
+}  
+
+nav a:hover {  
+    text-decoration: underline;  
+}  
+
+#map {  
+    height: 500px; /* Increased height for better visibility */  
+    width: 100%;  
+    margin: 20px 0;  
+    border: 2px solid #007bff;  
+    border-radius: 8px;  
+}  
+#locationForm {  
+    display: flex;                 /* Use flexbox for the form layout */  
+    flex-direction: column;       /* Stack the label above the input/button */  
+    align-items: center;          /* Center items horizontally */  
+    margin-bottom: 20px;          /* Distance below the form */  
+}  
+
+.input-group {  
+    display: flex;                /* Align input and button horizontally */  
+    width: 100%;                  /* Full width of the form */  
+    max-width: 400px;             /* Optional: Set a max width for the input group */  
+}  
+
+#location {  
+    padding: 10px;  
+    border: 1px solid #007bff;  
+    border-radius: 5px;  
+    margin-right: 10px;         /* Space between input and button */  
+    width: calc(100% - 150px);  /* Adjust width for input */  
+}  
+
+button {  
+    padding: 10px 15px;  
+    background-color: #007bff;  
+    color: white;  
+    border: 1px solid #007bff;  
+    border-radius: 5px;  
+    cursor: pointer;  
+    transition: background-color 0.3s;  
+}  
+
+button:hover {  
+    background-color: #0056b3;  /* Darker blue on hover */  
+}
+
+
+
+  
+
+ul {  
+    list-style-type: none;  
+    padding: 0;  
+    margin: 20px 0;  
+    max-width: 600px; /* Adjusted maximum width */  
+    margin: 0 auto;  
+}  
+
+li {  
+    background: white;  
+    padding: 15px;  
+    margin: 10px 0;  
+    border-radius: 8px;  
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  
+}  
+
+strong {  
+    display: block;  
+    margin-bottom: 5px;  
+    color: #007bff;  
+}  
+
+input[type="datetime-local"],  
+#location {  
+    width: calc(100% - 22px);  
+    padding: 10px;  
+    margin-top: 5px;  
+    border: 1px solid #007bff;  
+    border-radius: 5px;  
+}  
+
+@media (max-width: 600px) {  
+    #location {  
+        width: 90%;  
+    }  
+
+    input[type="datetime-local"] {  
+        width: calc(100% - 22px);  
+    }  
+}  
+
+/* Typing effect styles */  
+.typing {  
+    font-size: 25px;  
+    font-weight: bold;   
+    white-space: nowrap; /* Prevent line breaks */  
+    overflow: hidden; /* Hide the overflow for the typing effect */  
+    border-right: 0.15em solid; /* Create a cursor effect */  
+    animation: blink-caret 0.80s step-end infinite; /* Blinking cursor effect */  
+    display: inline-block;  
+    text-align: center; /* Center the typing text */  
+}  
+
+@keyframes blink-caret {  
+    from, to {  
+        border-color: transparent;  
+    }  
+    50% {  
+        border-color: rgba(7, 119, 247, 0.941);  
+    }  
+}  
+
+footer {  
+    margin-top: 20px;  
+    text-align: center;  
+}
+    </style>  
+  </head>  
+  <body>  
+    <nav>  
+        <a href="/">Home</a>  
+        <a href="/profile">Profile</a>  
+        <a href="/ticket">ticket</a>  
+    </nav>  
+
+    <div class="container">  
+        <h1>Parking Dashboard</h1>  
+        <h1 class="typing" id="typing-text"></h1>  <!-- Fixed unclosed tag -->  
+        <form id="locationForm">  
+            <div class="input-group">  
+                <input type="text" id="location" required placeholder="e.g., Cibaduyut, Bandung" />   
+                <button type="submit">Find</button>  
+            </div>  
+        </form>  
+
+        <div id="map"></div>  
+
+        <ul>  
+            <% parkingLots.forEach(lot => { %>  
+                <li>  
+                    <strong><%= lot.name %></strong> -   
+                    <span><%= lot.motorcycleAvailableSpot %> motorcycle spots available</span> |   
+                    <span><%= lot.carAvailableSpot %> car spots available</span>  
+                    <form action="/book" method="POST">  
+                        <input type="hidden" name="parkingLotId" value="<%= lot.id %>" />  
+                        <input type="hidden" name="userId" value="<%= userId %>" />  
+        
+                        <label for="vehicleType">Vehicle Type:</label>  
+                        <select name="vehicleType" id="vehicleType" required>  
+                            <option value="motorcycle">Motorcycle</option>  
+                            <option value="car">Car</option>  
+                        </select>  
+        
+                        <label for="startTime">Start Time:</label>  
+                        <input type="datetime-local" id="startTime" name="startTime" required />  
+        
+                        <label for="endTime">End Time:</label>  
+                        <input type="datetime-local" id="endTime" name="endTime" required />  
+        
+                        <button type="submit">Book</button>  
+                    </form>  
+                </li>  
+            <% }); %>  
+        </ul>
+    </div>  
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>  
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>  
+    <script>  
+        const parkingLots = [  
+            <% parkingLots.forEach(lot => { %>  
+                { id: <%= lot.id %>, name: '<%= lot.name %>', latitude: <%= lot.latitude %>, longitude: <%= lot.longitude %> },  
+            <% }); %>  
+        ];  
+
+        const map = L.map('map').setView([-6.903889, 107.576389], 12);  
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {  
+            maxZoom: 19,  
+            attribution: '© OpenStreetMap contributors'  
+        }).addTo(map);  
+
+        parkingLots.forEach(lot => {  
+            L.marker([lot.latitude, lot.longitude])  
+                .addTo(map)  
+                .bindPopup(lot.name);  
+        });  
+
+        document.getElementById('locationForm').addEventListener('submit', function(e) {  
+            e.preventDefault();  
+            const location = document.getElementById('location').value;  
+            findNearestParking(location);  
+        });  
+
+        async function findNearestParking(location) {  
+            const apiKey = '00e706971665492fb55b82a71c48c6e7';  
+            const geocodeUrl = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(location)}&key=${apiKey}`;  
+
+            try {  
+                const response = await fetch(geocodeUrl);  
+                const data = await response.json();  
+
+                if (data.results.length > 0) {  
+                    const userLocation = data.results[0].geometry;  
+                    const userLat = userLocation.lat;  
+                    const userLng = userLocation.lng;  
+
+                    const nearestLot = findNearestParkingLot(userLat, userLng);  
+                    if (nearestLot) {  
+                        alert(`The nearest parking lot is ${nearestLot.name}`);  
+                        map.setView([nearestLot.latitude, nearestLot.longitude], 15);  
+                        L.marker([nearestLot.latitude, nearestLot.longitude]).addTo(map).bindPopup('Nearest Lot: ' + nearestLot.name).openPopup();  
+                    } else {  
+                        alert('No parking lots found nearby.');  
+                    }  
+                } else {  
+                    alert('Location not found. Please try again.');  
+                }  
+            } catch (error) {  
+                console.error('Error fetching the location:', error);  
+                alert('An error occurred while finding your location.');  
+            }  
+        }  
+
+        function findNearestParkingLot(userLat, userLng) {  
+            let nearestLot = null;  
+            let minDistance = Infinity;  
+
+            parkingLots.forEach(lot => {  
+                const distance = getDistanceBetweenPoints(userLat, userLng, lot.latitude, lot.longitude);  
+                if (distance < minDistance) {  
+                    minDistance = distance;  
+                    nearestLot = lot;  
+                }  
+            });  
+
+            return nearestLot;  
+        }  
+
+        function getDistanceBetweenPoints(lat1, lon1, lat2, lon2) {  
+            const R = 6371; // Earth radius in kilometers  
+            const dLat = degreesToRadians(lat2 - lat1);  
+            const dLon = degreesToRadians(lon2 - lon1);  
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +  
+                      Math.cos(degreesToRadians(lat1)) * Math.cos(degreesToRadians(lat2)) *  
+                      Math.sin(dLon/2) * Math.sin(dLon/2);  
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));  
+            return R * c; // Distance in kilometers  
+        }  
+
+        function degreesToRadians(degrees) {  
+            return degrees * (Math.PI / 180);  
+        }  
+
+        // Typing effect script  
+        const typingTextElement = document.getElementById('typing-text');  
+        const typingText = "Hello, where are you going?";  
+        let i = 0;  
+
+        function type() {  
+            if (i < typingText.length) {  
+                typingTextElement.innerHTML += typingText.charAt(i);  
+                i++;  
+                setTimeout(type, 150); // Adjust typing speed here  
+            } else {  
+                setTimeout(() => {  
+                    typingTextElement.innerHTML = '';  
+                    i = 0;  
+                    type(); // Restart typing effect  
+                }, 2000); // Delay before restarting the effect  
+            }  
+        }  
+
+        type(); // Start typing effect  
+    </script>  
+</body>  
+</html>  
+
+<%- include('layouts/footer') %>  

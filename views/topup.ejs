@@ -1,0 +1,51 @@
+<!-- views/topup.ejs -->  
+<!DOCTYPE html>  
+<html lang="en">  
+
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Top Up Coins</title>  
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">  
+    <style>  
+        body {  
+            background-color: #f8f9fa; /* Light background color */  
+        }  
+
+        .card {  
+            margin-top: 20px; /* Space above the card */  
+        }  
+    </style>  
+</head>  
+
+<body>  
+    <div class="container my-5">  
+        <h1 class="text-center mb-4">Top Up Coins</h1>  
+        <div class="card">  
+            <div class="card-body">  
+                <h5 class="card-title">Current Coin Balance: <strong><%= user.coins %> Coins</strong></h5>  
+                <form action="/topup" method="POST">  
+                    <div class="mb-3">  
+                        <label for="amount" class="form-label">Enter Amount (in your currency):</label>  
+                        <input type="number" class="form-control" id="amount" name="amount" placeholder="Amount" required min="1>  
+                    </div>  
+                    <div class="mb-3">  
+                        <label for="conversionRate" class="form-label">Conversion Rate: </label>  
+                        <input type="text" class="form-control" id="conversionRate" value="<%= conversionRate %> coins for 1 unit of currency" disabled>  
+                    </div>  
+                    <button type="submit" class="btn btn-primary w-100">Top Up</button>  
+                </form>  
+                <div class="text-center mt-3">  
+                    <a href="/profile">Back to Profile</a>  
+                </div>  
+                <div class="text-danger text-center mt-2"><%= error %></div> <!-- Display error messages if needed -->  
+            </div>  
+        </div>  
+    </div>  
+
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>  
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>  
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>  
+</body>  
+
+</html>

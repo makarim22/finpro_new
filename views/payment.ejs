@@ -1,0 +1,47 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <title>Mock Payment</title>  
+</head>  
+<body>  
+    <h1>Mock Payment</h1>  
+    <form  action="/process" method="POST"id="payment-form">  
+        <input type="hidden" name="reservationId" id="reservationId" value="<%= reservationId %>"> <!-- Pass the reservation ID -->  
+        <button type="submit">Confirm Payment</button>  
+    </form>  
+    <div id="payment-message" role="alert"></div>  
+
+    <div id="ticket-details" style="display: none;">  
+        <h2>Your Parking Ticket</h2>  
+        <p id="ticket-info"></p>  
+        <img id="barcode" alt="Barcode" />  
+    </div>  
+
+    <script>  
+        const form = document.getElementById('payment-form');  
+        form.addEventListener('submit', async (event) => {  
+            event.preventDefault();  
+            const reservationId = document.getElementById('reservationId').value;  
+
+            const response = await fetch('/mock-payment', {  
+                method: 'POST',  
+                headers: {  
+                    'Content-Type': 'application/json',  
+                },  
+                body: JSON.stringify({ reservationId }),  
+            });  
+
+            const result = await response.json();  
+            document.getElementById('payment-message').innerText = result.message;  
+
+            if (result.ticket) {  
+                // Display the ticket details  
+                document.getElementById('ticket-info').innerText = `Ticket ID: ${result.ticket.ticketId}\nUser ID: ${result.ticket.userId}\nParking Lot ID: ${result.ticket.parkingLotId}\nVehicle ID: ${result.ticket.vehicleId}\nReservation Date: ${result.ticket.reservationDate}\nPayment Status: ${result.ticket.paymentStatus}`;  
+                document.getElementById('barcode').src = result.barcodeImage; // Set the barcode image  
+                document.getElementById('ticket-details').style.display = 'block'; // Show ticket details  
+            }  
+        });  
+    </script>  
+</body>  
+</html>

@@ -1,0 +1,48 @@
+/* public/styles.css */  
+body {  
+    font-family: Arial, sans-serif;  
+    margin: 0;  
+    padding: 0;  
+}  
+
+header {  
+    background: #007BFF;  
+    color: white;  
+    padding: 10px;  
+    text-align: center;  
+}  
+
+nav a {  
+    margin: 0 15px;  
+    color: white;  
+    text-decoration: none;  
+}  
+
+.container {  
+    padding: 20px;  
+    margin : 0 auto;
+}  
+
+.container2 {  
+    display: flex;  
+    flex-direction: column;  
+    align-items: center; /* Center horizontally */  
+    justify-content: center; /* Center vertically */  
+    max-width: 800px; /* Optional: Set a max width */  
+    margin: 0 auto; /* Center container on the page */  
+    padding: 20px; /* Ensure padding is consistent */  
+  }  
+.error {  
+    color: red;  
+}
+.moving-text {  
+    display: inline-block;  
+    animation: move 10s linear infinite; /* Durasi dan tipe animasi */  
+}  
+
+@keyframes move {  
+ 
+    100% {  
+        transform: translateX(-100%); /* Bergerak ke kiri */  
+    } 
+}

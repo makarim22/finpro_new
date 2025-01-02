@@ -1,0 +1,29 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Total Revenue per Parking Lot</title>  
+    <link rel="stylesheet" href="/path/to/your/styles.css"> <!-- Include CSS -->  
+</head>  
+<body>  
+    <h1>Total Revenue per Parking Lot</h1>  
+    <table>  
+        <thead>  
+            <tr>  
+                <th>Parking Lot Name</th>  
+                <th>Total Revenue</th>  
+            </tr>  
+        </thead>  
+        <tbody>  
+            <% revenueData.forEach(lot => { %>  
+                <tr>  
+                    <td><%= lot.name %></td>  
+                    <td><%= lot.totalRevenue ? lot.totalRevenue.toFixed(2) : '0.00' %> &euro;</td>  
+                </tr>  
+            <% }) %>  
+        </tbody>  
+    </table>  
+    <a href="/admin/dashboard">Back to Dashboard</a>  
+</body>  
+</html>

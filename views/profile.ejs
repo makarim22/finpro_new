@@ -1,0 +1,106 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>User Profile</title>  
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">  
+    <style>  
+        body {  
+            background-color: #f8f9fa; /* Light background color */  
+        }  
+        .card {  
+            margin-bottom: 20px; /* Space between cards */  
+            border-radius: 15px; /* Rounded corners */  
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow */  
+        }  
+        .profile-header {  
+            background-color: #007bff; /* Branding color */  
+            color: white;  
+            border-radius: 15px 15px 0 0; /* Rounded top corners */  
+            padding: 20px;  
+            text-align: center;  
+        }  
+        .profile-header h1 {  
+            margin: 0;  
+        }  
+        .logout-btn {  
+            background-color: #dc3545; /* Bootstrap danger color */  
+            border: none;  
+            border-radius: 5px;  
+            padding: 10px 20px;  
+            font-size: 16px;  
+            transition: background-color 0.3s;  
+        }  
+        .logout-btn:hover {  
+            background-color: #c82333; /* Darker red on hover */  
+        }  
+        .booking-list {  
+            margin: 10px 0;  
+        }  
+        .total-info {  
+            margin-top: 15px;  
+            font-weight: bold;  
+        }  
+    </style>  
+</head>  
+
+<body>  
+    <div class="container my-5">  
+        <div class="profile-header">  
+            <h1>User Profile</h1>  
+            <p>Welcome back, <%= user.username %>!</p>  
+        </div>  
+
+        <!-- Profile Information Card -->  
+        <div class="card">  
+            <div class="card-body">  
+                <h5 class="card-title">Profile Information</h5>  
+                <p><strong>Username:</strong> <%= user.username %></p>  
+                <p><strong>Email:</strong> <%= user.email %></p>  
+                <p><strong>Coin Balance:</strong> <%= user.coins %> Coins</p>  
+            </div>  
+        </div>  
+
+        <!-- Recent Bookings Card -->  
+        <div class="card">  
+            <div class="card-body">  
+                <h5 class="card-title">Recent Bookings</h5>  
+                <div class="booking-list">  
+                    <% if (recentBookings && recentBookings.length) { %>  
+                        <ul class="list-group">  
+                            <% recentBookings.forEach(booking => { %>  
+                                <li class="list-group-item">  
+                                    <strong>Parking Lot:</strong> <%= booking.parkinglotname %> <br>  
+                                    <strong>Location:</strong> <%= booking.parkinglotlocation %> <br>  
+                                    <strong>Duration:</strong> <%= booking.duration %> hours <br>  
+                                    <strong>Amount Paid:</strong> $<%= booking.totalCost ? booking.totalCost.toFixed(2) : '0.00' %>  
+                                </li>  
+                            <% }) %>  
+                        </ul>  
+                        <div class="total-info">  
+                            <strong>Total Amount Paid:</strong> $<%= totalAmountPaid.toFixed(2) %> <br>  
+                            <strong>Total Duration:</strong> <%= totalDuration %> hours  
+                        </div>  
+                    <% } else { %>  
+                        <p>No recent bookings found.</p>  
+                    <% } %>  
+                </div>  
+            </div>  
+        </div>  
+
+        <div class="text-center">  
+            <form action="/logout" method="POST" style="display:inline;">  
+                <button type="submit" class="btn logout-btn">Logout</button>  
+            </form>  
+            <form action="/dashboard" method="GET" style="display:inline;">  
+                <button type="submit" class="btn dashboard-btn">Dashboard</button>  
+            </form>  
+        </div>  
+
+        <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>  
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>  
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>  
+    </div>  
+</body>  
+</html>

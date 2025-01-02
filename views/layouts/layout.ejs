@@ -1,0 +1,26 @@
+<!-- views/layout.ejs -->  
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title><%= title %></title>  
+    <link rel="stylesheet" href="/styles.css">  
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBfeiUrJ5a6tqPnwK9PwKRvcAR2grk2PKY"></script> <!-- Replace with your Google Maps API key -->  
+</head>  
+<body>  
+    <header>  
+        <h1>Parking App</h1>  
+        <nav>  
+            <a href="/dashboard">Dashboard</a>  
+            <a href="/logout">Logout</a>  
+        </nav>  
+    </header>  
+    <div class="container">  
+        <%- //body %> <!-- This is where the content of other views will be injected -->  
+    </div>  
+    <footer>  
+        <p>&copy; 2024 Parking App</p>  
+    </footer>  
+</body>  
+</html>
