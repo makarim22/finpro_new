@@ -137,36 +137,36 @@ exports.dashboard = async (req, res) => {
         });  
     }  
 };
-exports.bookParking = async (req, res) => {  
-    try {  
-        // Create a new reservation based on user input  
-        const userId = req.session.userId; // Get userId from the session  
-        const { parkingLotId, vehicleId, startTime, endTime } = req.body;  
+// exports.bookParking = async (req, res) => {  
+//     try {  
+//         // Create a new reservation based on user input  
+//         const userId = req.session.userId; // Get userId from the session  
+//         const { parkingLotId, vehicleId, startTime, endTime } = req.body;  
 
-        // Book the reservation  
-        const newReservation = await Reservation.create({  
-            userId,  
-            parkingLotId,  
-            vehicleId,  
-            startTime,  
-            endTime,  
-        });  
+//         // Book the reservation  
+//         const newReservation = await Reservation.create({  
+//             userId,  
+//             parkingLotId,  
+//             vehicleId,  
+//             startTime,  
+//             endTime,  
+//         });  
 
-        // Render the payment page with the reservation details  
-        res.render('payment', {  
-            reservationId: newReservation.id,  
-            ticket: {  
-                ticketId: newReservation.id,  
-                userId: newReservation.userId,  
-                parkingLotId: newReservation.parkingLotId,  
-                vehicleId: newReservation.vehicleId,  
-                reservationDate: newReservation.reservationDate,  
-                paymentStatus: newReservation.paymentStatus,  
-            },  
-            barcodeImage: `https://example.com/barcode/${newReservation.id}`, // Example static link to a barcode image  
-        });  
-    } catch (error) {  
-        console.error('Error booking parking:', error);  
-        res.status(500).send('Internal Server Error');  
-    }  
-};
+//         // Render the payment page with the reservation details  
+//         res.render('payment', {  
+//             reservationId: newReservation.id,  
+//             ticket: {  
+//                 ticketId: newReservation.id,  
+//                 userId: newReservation.userId,  
+//                 parkingLotId: newReservation.parkingLotId,  
+//                 vehicleId: newReservation.vehicleId,  
+//                 reservationDate: newReservation.reservationDate,  
+//                 paymentStatus: newReservation.paymentStatus,  
+//             },  
+//             barcodeImage: `https://example.com/barcode/${newReservation.id}`, // Example static link to a barcode image  
+//         });  
+//     } catch (error) {  
+//         console.error('Error booking parking:', error);  
+//         res.status(500).send('Internal Server Error');  
+//     }  
+// };

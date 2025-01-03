@@ -5,7 +5,6 @@ const sequelize = require('./config/database');
 // const cron = require('node-cron');  
 const cookieParser = require('cookie-parser');
 
-const { resetExpiredParkingSpots } = require('./resetparking');  
 /// define routes
 const authRoutes = require('./routes/authRoutes');  
 const parkingRoutes = require('./routes/parkingRoutes');  
@@ -21,7 +20,7 @@ const cors = require('cors');
 require('dotenv').config();  
 
 const app = express();  
-const PORT = process.env.PORT || 3001;  
+const PORT = process.env.PORT || 3000;  
 
 
 
@@ -56,7 +55,7 @@ app.use('/', bookingRoutes);
 app.use('/', profileRoutes);
 app.use('/', ticketRoutes);  
 app.use('/', userRoutes);// Add the profile routes here 
-
+app.use(express.static('public'));
 sequelize.sync({ alter: true }); // This will adjust the models to match the database schema
 
 // Start the server  
