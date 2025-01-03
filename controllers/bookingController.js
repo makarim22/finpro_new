@@ -6,7 +6,7 @@ const transporter = require("../services/mailService"); // Adjust the path accor
 
 exports.book = async (req, res) => {  
   try {  
-    const userId = req.session.userId; // Get the user ID from the session  
+    const userId = req.userId; // Get the user ID from the session  
     const { parkingLotId, vehicleType, startTime, endTime } = req.body;  
 
     // Validate input fields  
@@ -58,28 +58,28 @@ exports.book = async (req, res) => {
     }  
 
     // Check for conflicting bookings  
-    const existingBooking = await Booking.findOne({  
-      where: {  
-        parkingLotId: parkingLotId,  
-        userId: userId,  
-        [Op.or]: [  
-          {  
-            startTime: {  
-              [Op.lt]: end, // Booking starts before another booking ends  
-            },  
-            endTime: {  
-              [Op.gt]: start, // Booking ends after another booking starts  
-            },  
-          },  
-        ],  
-      },  
-    });  
+    // const existingBooking = await Booking.findOne({  
+    //   where: {  
+    //     parkingLotId: parkingLotId,  
+    //     userId: userId,  
+    //     [Op.or]: [  
+    //       {  
+    //         startTime: {  
+    //           [Op.lt]: end, // Booking starts before another booking ends  
+    //         },  
+    //         endTime: {  
+    //           [Op.gt]: start, // Booking ends after another booking starts  
+    //         },  
+    //       },  
+    //     ],  
+    //   },  
+    // });  
 
-    if (existingBooking) {  
-      return res  
-        .status(400)  
-        .send("You already have a booking in this parking lot at that time.");  
-    }  
+    // if (existingBooking) {  
+    //   return res  
+    //     .status(400)  
+    //     .send("You already have a booking in this parking lot at that time.");  
+    // }  
 
     // Calculate total cost and check user's balance  
     const durationInHours = Math.ceil((end - start) / (1000 * 60 * 60));  

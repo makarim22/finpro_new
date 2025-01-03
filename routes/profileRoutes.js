@@ -6,6 +6,6 @@ const { authenticateJWT } = require('../middleware/authMiddleware');
 const profileController = require('../controllers/profileController'); // Import the controller  
 
 // Profile route  
-router.get('/profile', authenticateJWT, isUser, profileController.getProfile); // Use the controller function  
+router.get('/user/profile', authenticateJWT, isUser, profileController.getProfile); // Use the controller function  
 
 module.exports = router;

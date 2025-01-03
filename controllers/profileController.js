@@ -165,7 +165,7 @@ exports.getProfile = async (req, res) => {
         const totalDuration = recentBookings.reduce((sum, booking) => sum + booking.duration || 0, 0);  
 
         // Render the profile view with user and bookings data  
-        res.render("profile", {  
+        res.render("user/profile", {  
             title: 'User Profile',        // Title for user profile  
             user,                        // Pass user information  
             recentBookings,              // Pass recent bookings data  

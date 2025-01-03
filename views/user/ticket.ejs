@@ -1,0 +1,128 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Your Tickets</title>  
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">  
+    <style>  
+        /* Styles for the Ticket */  
+        .ticket {  
+            border: 2px dashed #4A90E2;  
+            padding: 20px;  
+            border-radius: 10px;  
+            width: 550px;  
+            margin: 20px auto;  
+            text-align: center;  
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);  
+            transition: transform 0.2s;  
+        }  
+        .ticket:hover {  
+            transform: scale(1.02);  
+        }  
+    </style>  
+</head>  
+<body class="bg-gray-100">  
+    <div class="container mx-auto">  
+        <h1 class="text-3xl font-bold text-center my-5">My Tickets</h1>  
+
+        <% if (ticket) { %>  <!-- Check if single ticket data is passed -->  
+            <div class="ticket">  
+                <h2 class="text-2xl font-bold">Parking Ticket</h2>  
+                <p><strong>Booking ID:</strong> <span id="bookingId"><%= ticket.bookingid %></span></p>  
+                <p><strong>Issued For:</strong> <span id="userName"><%= ticket.userId %></span></p>  
+                <p><strong>Parking Lot Name:</strong> <span id="parkingLot"><%= ticket.parkinglotname %></span></p>  
+                <p><strong>Date:</strong> <span id="bookingDate"><%= new Date(ticket.startTime).toLocaleDateString() %></span></p>  
+                <p><strong>Duration:</strong> <span id="duration"><%= ticket.duration %></span> hours</p>  
+                <p><strong>Amount Paid:</strong> <span id="totalCost">$<%= ticket.totalCost.toFixed(2) %></span></p>  
+
+                <svg id="barcode-<%= ticket.bookingid %>"></svg> <!-- SVG for Barcode -->  
+
+                <p class="text-sm text-gray-500">Show this ticket on arrival.</p>  
+            </div>  
+        <% } else if (tickets && tickets.length > 0) { %>  <!-- Check for an array of tickets -->  
+            <% // Sort tickets by startTime in descending order %>  
+            <% tickets.sort((a, b) => new Date(b.startTime) - new Date(a.startTime)); %>  
+            <% tickets.forEach(ticket => { %>  
+                <div class="ticket">  
+                    <h2 class="text-2xl font-bold">Parking Ticket</h2>  
+                    <p><strong>Booking ID:</strong> <span id="bookingId"><%= ticket.bookingid %></span></p>  
+                    <p><strong>Issued For:</strong> <span id="userName"><%= ticket.userId %></span></p>  
+                    <p><strong>Parking Lot Name:</strong> <span id="parkingLot"><%= ticket.parkinglotname %></span></p>  
+                    <p><strong>Date:</strong> <span id="bookingDate"><%= new Date(ticket.startTime).toLocaleDateString() %></span></p>  
+                    <p><strong>Duration:</strong> <span id="duration"><%= ticket.duration %></span> hours</p>  
+                    <p><strong>Amount Paid:</strong> <span id="totalCost">$<%= ticket.totalCost.toFixed(2) %></span></p>  
+
+                    <svg id="barcode-<%= ticket.bookingid %>"></svg> <!-- SVG for Barcode -->  
+
+                    <p class="text-sm text-gray-500">Show this ticket on arrival.</p>  
+                </div>  
+            <% }); %>  
+
+            <!-- Pagination Controls -->  
+            <div class="flex justify-center mt-5">  
+                <% if (page > 1) { %>  
+                    <a href="?page=<%= page - 1 %>&limit=<%= limit %>" class="mx-2 text-blue-500 hover:underline">Previous</a>  
+                <% } %>  
+                <% for (let i = 1; i <= totalPages; i++) { %>  
+                    <a href="?page=<%= i %>&limit=<%= limit %>" class="mx-2 text-blue-500 hover:underline <%= page === i ? 'font-bold' : '' %>"><%= i %></a>  
+                <% } %>  
+                <% if (page < totalPages) { %>  
+                    <a href="?page=<%= page + 1 %>&limit=<%= limit %>" class="mx-2 text-blue-500 hover:underline">Next</a>  
+                <% } %>  
+            </div>  
+
+        <% } else { %>  
+            <p class="text-center">No tickets found for this user.</p>  
+        <% } %>  
+
+        <div class="text-center">  
+            <a href="/user/profile" class="block mt-5 text-blue-500 hover:underline">Back to Profile</a> 
+            <a href="/user/dashboard" class="block mt-5 text-blue-500 hover:underline">Back to Dashboard</a>  
+        </div>  
+    </div>  
+
+    <!-- Include JsBarcode Library -->  
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>  
+    <script>  
+        document.addEventListener("DOMContentLoaded", function() {  
+            const tickets = <%- JSON.stringify(tickets || []) %>;  
+            const ticketId = <%= JSON.stringify(ticket ? ticket.bookingid : null) %>;  
+
+            // Generate barcodes for each ticket in the list  
+            tickets.forEach(ticket => {  
+                const bookingID = ticket.bookingid;  
+                const userName = ticket.userId;  
+                const bookingDate = new Date(ticket.startTime).toLocaleDateString();  
+
+                // Concatenate values into a single string for the barcode  
+                const barcodeData = `${bookingID}|${userName}|${bookingDate}`;  
+
+                // Generate Barcode using JsBarcode  
+                JsBarcode(`#barcode-${bookingID}`, barcodeData, {  
+                    format: "CODE128", // Type of barcode  
+                    lineColor: "#000",  
+                    width: 2.8,  
+                    height: 120,  
+                    displayValue: true // Show the value under the barcode  
+                });  
+            });  
+
+            // If rendering a single ticket, generate its barcode  
+            if (ticketId) {  
+                const bookingDetails = tickets.find(t => t.bookingId === ticketId);  
+                let userName = bookingDetails ? bookingDetails.userId : "";  
+                const barcodeData = `${ticketId}|${userName}|${new Date(bookingDetails.startTime).toLocaleDateString()}`;  
+
+                JsBarcode(`#barcode-${ticketId}`, barcodeData, {  
+                    format: "CODE128", // Type of barcode  
+                    lineColor: "#000",  
+                    width: 2,  
+                    height: 100,  
+                    displayValue: true // Show the value under the barcode  
+                });  
+            }  
+        });  
+    </script>  
+</body>  
+</html>
