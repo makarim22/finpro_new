@@ -2,7 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');  
 const session = require('express-session');  
 const sequelize = require('./config/database');  
-const cron = require('node-cron');  
+// const cron = require('node-cron');  
+const cookieParser = require('cookie-parser');
 
 const { resetExpiredParkingSpots } = require('./resetparking');  
 /// define routes
@@ -12,12 +13,16 @@ const bookingRoutes = require('./routes/bookingRoutes');
 const profileRoutes = require('./routes/profileRoutes'); 
 const homeRoutes = require('./routes/homeRoutes');  
 const dashboardRoutes = require('./routes/dashboardRoutes');
-const ticketRoutes = require('./routes/ticketRoutes'); //
+const userRoutes = require('./routes/userRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const {isAdmin} = require ('./middleware/authmiddleware2')
+const ticketRoutes = require('./routes/ticketRoutes'); //const userRoutes = require('./routes/user');  
 const cors = require('cors');  
 require('dotenv').config();  
 
 const app = express();  
 const PORT = process.env.PORT || 3001;  
+
 
 
 // Setup session middleware  
@@ -29,6 +34,7 @@ app.use(session({
 }));  
 
 // Other middlewares and routes...
+app.use(cookieParser()); 
 // Middleware  
 app.use(bodyParser.urlencoded({ extended: true }));  
 app.use(bodyParser.json());  
@@ -44,9 +50,12 @@ app.use('/', homeRoutes);
 app.use('/', authRoutes); // Add the authentication routes  
 app.use('/', dashboardRoutes); // Add dashboard routes here   
 app.use('/', parkingRoutes);  
+app.use('/admin', adminRoutes);
+app.use('/user', userRoutes);
 app.use('/', bookingRoutes); 
 app.use('/', profileRoutes);
-app.use('/', ticketRoutes);  // Add the profile routes here 
+app.use('/', ticketRoutes);  
+app.use('/', userRoutes);// Add the profile routes here 
 
 sequelize.sync({ alter: true }); // This will adjust the models to match the database schema
 

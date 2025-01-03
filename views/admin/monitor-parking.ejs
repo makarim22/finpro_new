@@ -1,0 +1,50 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Monitor Parking Spaces</title>  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">  
+</head>  
+<body class="bg-gray-100">  
+    <div class="container mx-auto mt-5">  
+        <h1 class="text-3xl font-bold mb-5">Monitor Parking Spaces</h1>  
+        <table class="min-w-full bg-white border border-gray-300">  
+            <thead>  
+                <tr>  
+                    <th class="border-b-2 border-gray-300 px-4 py-2">Parking Lot</th>  
+                    <th class="border-b-2 border-gray-300 px-4 py-2">Total Spots</th>  
+                    <th class="border-b-2 border-gray-300 px-4 py-2">Motorcycle Available</th>  
+                    <th class="border-b-2 border-gray-300 px-4 py-2">Car Available</th>  
+                    <th class="border-b-2 border-gray-300 px-4 py-2">Actions</th>  
+                </tr>  
+            </thead>  
+            <tbody>  
+                <% parkingLots.forEach(lot => { %>  
+                    <tr>  
+                        <td class="border-b border-gray-300 px-4 py-2"><%= lot.name %></td>  
+                        <td class="border-b border-gray-300 px-4 py-2"><%= lot.motorcycle_capacity + lot.car_capacity %></td>  
+                        <td class="border-b border-gray-300 px-4 py-2"><%= lot.motorcycle_available_spots %></td>  
+                        <td class="border-b border-gray-300 px-4 py-2"><%= lot.car_available_spots %></td>  
+                        <td class="border-b border-gray-300 px-4 py-2">  
+                            <form action="/api/admin/parking/park" method="POST" class="inline">  
+                                <input type="hidden" name="parkingLotId" value="<%= lot.id %>">  
+                                <select name="vehicleType" class="border rounded px-2 py-1">  
+                                    <option value="motorcycle">Motorcycle</option>  
+                                    <option value="car">Car</option>  
+                                </select>  
+                                <button type="submit" class="bg-green-500 text-white px-2 py-1">Park</button>  
+                            </form>  
+                            <form action="/api/admin/parking/leave" method="POST" class="inline">  
+                                <input type="hidden" name="parkingLotId" value="<%= lot.id %>">  
+                                <input type="text" name="spaceId" placeholder="Space ID" required class="border rounded px-2 py-1">  
+                                <button type="submit" class="bg-red-500 text-white px-2 py-1">Leave</button>  
+                            </form>  
+                        </td>  
+                    </tr>  
+                <% }); %>  
+            </tbody>  
+        </table>  
+    </div>  
+</body>  
+</html>

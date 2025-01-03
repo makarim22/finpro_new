@@ -1,0 +1,26 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Park Vehicle</title>  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">  
+</head>  
+<body class="bg-gray-100">  
+    <div class="container mx-auto mt-5">  
+        <h1 class="text-3xl font-bold mb-5">Park a Vehicle</h1>  
+        <form action="/api/admin/parking/park" method="POST">  
+            <select name="parkingLotId" required class="border rounded px-2 py-1 mb-4">  
+                <% parkingLots.forEach(lot => { %>  
+                    <option value="<%= lot.id %>"><%= lot.name %></option>  
+                <% }); %>  
+            </select>  
+            <select name="vehicleType" required class="border rounded px-2 py-1 mb-4">  
+                <option value="motorcycle">Motorcycle</option>  
+                <option value="car">Car</option>  
+            </select>  
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2">Park Vehicle</button>  
+        </form>  
+    </div>  
+</body>  
+</html>

@@ -1,45 +1,116 @@
-const { ParkingLot } = require('../models');  
+const sequelize = require('../config/database');
 
-exports.manageParkingLots = async (req, res) => {  
-    try {  
-        const parkingLots = await ParkingLot.findAll();  
-        res.render('admin/manage-parking-lots', { parkingLots });  
-    } catch (error) {  
-        console.error('Error fetching parking lots:', error);  
-        res.status(500).send('An error occurred while retrieving parking lots.');  
-    }  
-};  
+class AdminController {  
+    // Monitor parking spaces  
+    async monitorParkingSpaces(req, res) {  
+        try {  
+            const result = await sequelize.query(`  
+                SELECT * from parking_lots
+            `);  
 
-exports.deductSpot = async (req, res) => {  
-    const { parkingLotId, spotsToDeduct } = req.body;  
-    try {  
-        const parkingLot = await ParkingLot.findByPk(parkingLotId);  
-        if (!parkingLot || (parkingLot.carAvailableSpot < spotsToDeduct)) {  
-            return res.status(400).send('Cannot deduct spots, insufficient available spots.');  
+            res.render('admin/monitor-parking', { parkingLots: result[0] }); // Sequelize returns an array: [results, metadata]  
+        } catch (error) {  
+            console.error('Error fetching parking lots:', error);  
+            res.status(500).send('Server error');  
         }  
-
-        parkingLot.carAvailableSpot -= spotsToDeduct;  
-        await parkingLot.save();  
-        res.redirect('/admin/manage-parking-lots');  
-    } catch (error) {  
-        console.error('Error deducting parking spot:', error);  
-        res.status(500).send('An error occurred while deducting the spot.');  
     }  
-};  
 
-exports.deductMotorcycleSpot = async (req, res) => {  
-    const { parkingLotId, motorcycleSpotsToDeduct } = req.body;  
-    try {  
-        const parkingLot = await ParkingLot.findByPk(parkingLotId);  
-        if (!parkingLot || (parkingLot.motorcycleAvailableSpot < motorcycleSpotsToDeduct)) {  
-            return res.status(400).send('Cannot deduct motorcycle spots, insufficient available spots.');  
+    // Manage Users  
+    async manageUsers(req, res) {  
+        try {  
+            const result = await sequelize.query(`SELECT id, username, coins FROM users`); // Adjust query as necessary  
+            
+            // Render the manage users view and pass users data  
+            res.render('admin/manage-users', { users: result[0] }); // result[0] contains the actual data  
+        } catch (error) {  
+            console.error('Error fetching users:', error);  
+            res.status(500).send('Server error');  
         }  
-
-        parkingLot.motorcycleAvailableSpot -= motorcycleSpotsToDeduct;  
-        await parkingLot.save();  
-        res.redirect('/admin/manage-parking-lots');  
-    } catch (error) {  
-        console.error('Error deducting motorcycle parking spot:', error);  
-        res.status(500).send('An error occurred while deducting the motorcycle spot.');  
     }  
-};
+
+    // Park a vehicle  
+    async parkVehicle(req, res) {  
+        const { parkingLotId, vehicleType } = req.body;  
+
+        try {  
+            const availableSpaceResult = await sequelize.query(`  
+                SELECT id FROM parking_spaces   
+                WHERE parking_lot_id = :parkingLotId AND is_available = TRUE   
+                LIMIT 1  
+            `, {  
+                replacements: { parkingLotId } // Use replacements for parameters  
+            });  
+
+            if (availableSpaceResult[0].length === 0) {  
+                return res.status(400).json({ message: 'No available parking spaces!' });  
+            }  
+
+            const availableSpaceId = availableSpaceResult[0][0].id; // Get the first available space id  
+
+            // Update the parking space to occupied  
+            await sequelize.query(`  
+                UPDATE parking_spaces   
+                SET is_available = FALSE   
+                WHERE id = :availableSpaceId  
+            `, {  
+                replacements: { availableSpaceId } // Use replacements for parameters  
+            });  
+
+            // Update the corresponding parking lot available spots  
+            if (vehicleType === 'motorcycle') {  
+                await sequelize.query(`  
+                    UPDATE parking_lots   
+                    SET motorcycle_available_spots = motorcycle_available_spots - 1   
+                    WHERE id = :parkingLotId  
+                `, {  
+                    replacements: { parkingLotId }  
+                });  
+            } else if (vehicleType === 'car') {  
+                await sequelize.query(`  
+                    UPDATE parking_lots   
+                    SET car_available_spots = car_available_spots - 1   
+                    WHERE id = :parkingLotId  
+                `, {  
+                    replacements: { parkingLotId }  
+                });  
+            }  
+
+            res.status(200).json({ message: 'Vehicle parked successfully!' });  
+        } catch (error) {  
+            console.error('Error parking vehicle:', error);  
+            res.status(500).json({ message: 'Server error' });  
+        }  
+    }  
+
+    // Leave a vehicle  
+    async leaveVehicle(req, res) {  
+        const { parkingLotId, spaceId } = req.body;  
+
+        try {  
+            // Mark the parking space as available  
+            await sequelize.query(`  
+                UPDATE parking_spaces   
+                SET is_available = TRUE   
+                WHERE id = :spaceId  
+            `, {  
+                replacements: { spaceId }  
+            });  
+
+            // Update the corresponding parking lot available spots  
+            await sequelize.query(`  
+                UPDATE parking_lots   
+                SET motorcycle_available_spots = motorcycle_available_spots + 1   
+                WHERE id = :parkingLotId  
+            `, {  
+                replacements: { parkingLotId }  
+            });  
+
+            res.status(200).json({ message: 'Vehicle left successfully!' });  
+        } catch (error) {  
+            console.error('Error leaving vehicle:', error);  
+            res.status(500).json({ message: 'Server error' });  
+        }  
+    }  
+}  
+
+module.exports = new AdminController();

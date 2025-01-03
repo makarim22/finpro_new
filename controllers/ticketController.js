@@ -31,15 +31,14 @@ const User = require('../models/User');
 //     }  
 // };
 
-const sequelize = require('../config/database');  // Import sequelize for raw SQL queries  
+const sequelize = require('../config/database');  // Import sequelize for raw queries  
 
 exports.generateTicket = async ({ params: { id: bookingId } }, res) => {  
     try {  
-        // Use raw SQL to get booking, parking lot, and user details  
+        // Use raw SQL to get booking and parking lot details  
         const [ticketData] = await sequelize.query(`  
             SELECT b.id AS bookingId,   
                    b."userId",   
-                   u.username AS userName, 
                    b."parkingLotId",   
                    b."startTime",   
                    b.duration,   
@@ -48,28 +47,23 @@ exports.generateTicket = async ({ params: { id: bookingId } }, res) => {
                    p.address AS parkingLotLocation  
             FROM bookings AS b  
             JOIN parking_lots AS p ON b."parkingLotId" = p.id  
-            JOIN users AS u ON b."userId" = u.id 
             WHERE b.id = :bookingId  
         `, {  
-            replacements: { bookingId }, // Safely replace the bookingId parameter   
+            replacements: { bookingId }, // Safely replace the bookingId parameter  
             type: sequelize.QueryTypes.SELECT  
         });  
-
-        // Log the result of the SQL query for debugging  
-        console.log('Retrieved ticket data:', JSON.stringify(ticketData, null, 2));  
 
         // Check if the booking exists  
         if (!ticketData) {  
             return res.status(404).json({ message: 'Booking not found.' });  
         }  
 
-        // Render the ticket view with the fetched data  
+        // Render or send ticket data  
         res.render('ticket', {  
             ticket: ticketData  
         });  
     } catch (error) {  
         console.error('Error generating ticket:', error);  
-        res.status(500).json({ message: 'An error occurred while generating the ticket.' });  
+        res.status(500).json({ message: 'Error generating ticket.' });  
     }  
 };
-
