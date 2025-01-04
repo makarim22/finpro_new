@@ -69,7 +69,8 @@ exports.authenticateJWT = (req, res, next) => {
     try {  
         const decoded = jwt.verify(token, process.env.JWT_SECRET);  
         req.userId = decoded.id; // Assuming your token payload contains 'id'  
-        req.userRole = decoded.role; // Assuming your token payload contains 'role'  
+        req.userRole = decoded.role; 
+        req.username = decoded.username// Assuming your token payload contains 'role'  
         next(); // Proceed to the next middleware or route handler  
     } catch (error) {  
         console.error('Token verification error:', error);  

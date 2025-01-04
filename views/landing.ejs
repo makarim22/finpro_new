@@ -10,14 +10,22 @@
             font-family: Arial, sans-serif;  
             margin: 0;  
             padding: 0;  
-            background-color: #ed9405;  
+            background-color: #ffffff;  /* White background */  
             color: #333;  
         }  
         header {  
-            background: #35424a;  
-            color: #ffffff;  
+            background: #ffffff;  /* Green background */  
+            color: #302828;  
             padding: 1rem 0;  
             text-align: center;  
+            position: relative;  
+        }  
+        .logo {  
+            position: absolute;  
+            top: auto;  
+            left: 8px;  
+            width: 250px;  /* Set the desired width to a larger size */  
+            height: auto;  /* Maintain aspect ratio */  
         }  
         .container {  
             width: 80%;  
@@ -57,7 +65,9 @@
 </head>  
 <body>  
     <header>  
-        <h1>Welcome to the Parking App</h1>  
+        <img src="../images/parkuy2.png" alt="Parking Logo" class="logo"> <!-- Adjust the path to your logo image -->  
+        <h1>Welcome to Parkuy</h1>  
+        <h3>Parkir, kuy!</h3>
     </header>  
     <div class="container">  
         <div class="cta">  

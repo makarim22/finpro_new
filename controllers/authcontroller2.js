@@ -151,6 +151,49 @@ try {
 // 
 
 
+// exports.login = async (req, res) => {  
+//     const { username, password } = req.body;  
+
+//     try {  
+//         // Use raw SQL to find the user by username and get the role  
+//         const [user] = await sequelize.query(`  
+//             SELECT u.id, u.username, u.password, r.role AS role_name  
+//             FROM users u  
+//             JOIN roles r ON u."roleId" = r.id  
+//             WHERE u.username = :username  
+//         `, {  
+//             replacements: { username },  
+//             type: sequelize.QueryTypes.SELECT,  
+//         });  
+
+//         // Check if user exists and password is correct  
+//         if (user && await bcrypt.compare(password, user.password)) {  
+//             // User authentication successful  
+//             const token = jwt.sign({ id: user.id, role: user.role_name }, process.env.JWT_SECRET, {  
+//                 expiresIn: '1h', // Token expiry time  
+//             });  
+
+//             // Set the token in a cookie  
+//             res.cookie('token', token, {  
+//                 httpOnly: true, // Prevent client-side access to the cookie  
+//                 secure: process.env.NODE_ENV === 'production', // Use secure cookies in production  
+//                 maxAge: 3600000, // Cookie expiration time in milliseconds (1 hour)  
+//             });  
+
+//             // Redirect based on user role  
+//             if (user.role_name === 'admin' || user.role_name === 'superadmin') {  
+//                 return res.redirect('/admin/dashboard');  
+//             } else {  
+//                 return res.redirect('/user/dashboard');  
+//             }  
+//         } else {  
+//             return res.status(401).send('Invalid credentials');  
+//         }  
+//     } catch (error) {  
+//         console.error('Login Error:', error);  
+//         return res.status(500).send('Server error');  
+//     }  
+// };
 exports.login = async (req, res) => {  
     const { username, password } = req.body;  
 
@@ -169,7 +212,11 @@ exports.login = async (req, res) => {
         // Check if user exists and password is correct  
         if (user && await bcrypt.compare(password, user.password)) {  
             // User authentication successful  
-            const token = jwt.sign({ id: user.id, role: user.role_name }, process.env.JWT_SECRET, {  
+            const token = jwt.sign({   
+                id: user.id,   
+                role: user.role_name,   
+                username: user.username // Add the username to the token payload  
+            }, process.env.JWT_SECRET, {  
                 expiresIn: '1h', // Token expiry time  
             });  
 

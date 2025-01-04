@@ -95,12 +95,16 @@ const sequelize = require('../config/database');
 //         });  
 //     }  
 // }; // Ensure your sequelize instance is imported  
-
 exports.dashboard = async (req, res) => {  
     try {  
         const userId = req.userId; // Get user ID from JWT  
         const name = req.username; // Assuming the username was included in the JWT payload  
         const userRole = req.userRole; // Get the user's role from JWT  
+
+        // Log the retrieved values for debugging  
+        console.log('User ID:', userId);  
+        console.log('Username:', name);  
+        console.log('User Role:', userRole);  
 
         if (!userId) {  
             return res.redirect('/login'); // Redirect to login if user is not authenticated  
@@ -131,7 +135,7 @@ exports.dashboard = async (req, res) => {
     } catch (error) {  
         console.error('Error fetching parking lots:', error);  
         // Optionally handle error rendering; consider a more general error page  
-        res.render('error', {   
+        res.render('error', {  
             message: 'Error fetching parking lots', // Render a general error page   
             error: error.message  
         });  

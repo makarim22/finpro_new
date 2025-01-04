@@ -1,361 +1,406 @@
-<!DOCTYPE html>  
-<html lang="en">  
-<head>  
-    <meta charset="UTF-8" />  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
-    <title>Parking Dashboard</title>  
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />  
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />  
-    <style>  
-        * {  
-            margin: 0;  
-            padding: 0;  
-            box-sizing: border-box;  
-        }  
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parking Dashboard</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {  
-            font-family: Arial, sans-serif;  
-            background-color: #f4f4f4;  
-            color: #333;  
-            line-height: 1.6;  
-        }  
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        line-height: 1.6;
+      }
 
-        .container {  
-            max-width: 1200px; /* Max width for larger screens */  
-            margin: 0 auto; /* Center the container */  
-            padding: 20px; /* Padding around the content */  
-            text-align: center; /* Center all text in the container */  
-        }  
+      .container {
+        max-width: 1200px; /* Max width for larger screens */
+        margin: 0 auto; /* Center the container */
+        padding: 20px; /* Padding around the content */
+        text-align: center; /* Center all text in the container */
+      }
 
-        h1,  
-        h2 {  
-            text-align: center;  
-            margin-bottom: 20px;  
-            color: #4a4a4a;  
-        }  
+      h1,
+      h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #4a4a4a;
+      }
 
-        nav {  
-            display: flex;  
-            justify-content: center;  
-            padding: 10px 0;  
-            background-color: #007bff;  
-            color: #fff;  
-        }  
+      nav {
+        display: flex;
+        justify-content: center;
+        padding: 10px 0;
+        background-color: #007bff;
+        color: #fff;
+      }
 
-        nav a {  
-            color: white;  
-            margin: 0 15px;  
-            text-decoration: none;  
-            font-weight: bold;  
-        }  
+      nav a {
+        color: white;
+        margin: 0 15px;
+        text-decoration: none;
+        font-weight: bold;
+      }
 
-        nav a:hover {  
-            text-decoration: underline;  
-        }  
+      nav a:hover {
+        text-decoration: underline;
+      }
 
-        #map {  
-            height: 500px; /* Increased height for better visibility */  
-            width: 100%;  
-            margin: 20px 0;  
-            border: 2px solid #007bff;  
-            border-radius: 8px;  
-        }  
+      #map {
+        height: 500px; /* Increased height for better visibility */
+        width: 100%;
+        margin: 20px 0;
+        border: 2px solid #007bff;
+        border-radius: 8px;
+      }
 
-        #locationForm {  
-            display: flex;  
-            flex-direction: column;  
-            align-items: center;  
-            margin-bottom: 20px;  
-        }  
+      #locationForm {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+      }
 
-        .input-group {  
-            display: flex;  
-            width: 100%;  
-            max-width: 400px;  
-        }  
+      .input-group {
+        display: flex;
+        width: 100%;
+        max-width: 400px;
+      }
 
-        #location {  
-            padding: 10px;  
-            border: 1px solid #007bff;  
-            border-radius: 5px;  
-            margin-right: 10px;  
-            width: calc(100% - 150px);  
-        }  
+      #location {
+        padding: 10px;
+        border: 1px solid #007bff;
+        border-radius: 5px;
+        margin-right: 10px;
+        width: calc(100% - 150px);
+      }
 
-        button {  
-            padding: 10px 15px;  
-            background-color: #007bff;  
-            color: white;  
-            border: 1px solid #007bff;  
-            border-radius: 5px;  
-            cursor: pointer;  
-            transition: background-color 0.3s;  
-        }  
+      button {
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: white;
+        border: 1px solid #007bff;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
 
-        button:hover {  
-            background-color: #0056b3;  
-        }  
+      button:hover {
+        background-color: #0056b3;
+      }
 
-        ul {  
-            list-style-type: none;  
-            padding: 0;  
-            margin: 20px 0;  
-            max-width: 600px;  
-            margin: 0 auto;  
-        }  
+      ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 20px 0;
+        max-width: 600px;
+        margin: 0 auto;
+      }
 
-        li {  
-            background: white;  
-            padding: 15px;  
-            margin: 10px 0;  
-            border-radius: 8px;  
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  
-        }  
+      li {
+        background: white;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
 
-        strong {  
-            display: block;  
-            margin-bottom: 5px;  
-            color: #007bff;  
-        }  
+      strong {
+        display: block;
+        margin-bottom: 5px;
+        color: #007bff;
+      }
 
-        input[type="datetime-local"],  
-        #location {  
-            width: calc(100% - 22px);  
-            padding: 10px;  
-            margin-top: 5px;  
-            border: 1px solid #007bff;  
-            border-radius: 5px;  
-        }  
+      input[type="datetime-local"],
+      #location {
+        width: calc(100% - 22px);
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #007bff;
+        border-radius: 5px;
+      }
 
-        @media (max-width: 600px) {  
-            #location {  
-                width: 90%;  
-            }  
+      @media (max-width: 600px) {
+        #location {
+          width: 90%;
+        }
 
-            input[type="datetime-local"] {  
-                width: calc(100% - 22px);  
-            }  
-        }  
+        input[type="datetime-local"] {
+          width: calc(100% - 22px);
+        }
+      }
 
-        /* Typing effect styles */  
-        .typing {  
-            font-size: 25px;  
-            font-weight: bold;   
-            white-space: nowrap; /* Prevent line breaks */  
-            overflow: hidden; /* Hide the overflow for the typing effect */  
-            border-right: 0.15em solid; /* Create a cursor effect */  
-            animation: blink-caret 0.80s step-end infinite; /* Blinking cursor effect */  
-            display: inline-block;  
-            text-align: center; /* Center the typing text */  
-        }  
+      /* Typing effect styles */
+      .typing {
+        font-size: 25px;
+        font-weight: bold;
+        white-space: nowrap; /* Prevent line breaks */
+        overflow: hidden; /* Hide the overflow for the typing effect */
+        border-right: 0.15em solid; /* Create a cursor effect */
+        animation: blink-caret 0.8s step-end infinite; /* Blinking cursor effect */
+        display: inline-block;
+        text-align: center; /* Center the typing text */
+      }
 
-        @keyframes blink-caret {  
-            from, to {  
-                border-color: transparent;  
-            }  
-            50% {  
-                border-color: rgba(7, 119, 247, 0.941);  
-            }  
-        }  
+      @keyframes blink-caret {
+        from,
+        to {
+          border-color: transparent;
+        }
+        50% {
+          border-color: rgba(7, 119, 247, 0.941);
+        }
+      }
 
-        footer {  
-            margin-top: 20px;  
-            text-align: center;  
-        }  
-        #result .alert {  
-    width: 300px; /* Set width for the square container */  
-    height: 300px; /* Set fixed height to create a square shape */  
-    display: flex;  
-    flex-direction: column; /* Align items in column */  
-    justify-content: center; /* Center content vertically */  
-    align-items: center; /* Center content horizontally */  
-    text-align: center; /* Center text */  
-    border: 2px solid #007bff; /* Define border style */  
-    border-radius: 8px; /* Style edges with rounded corners */  
-    background-color: #f8f9fa; /* Light background color for contrast */  
-    margin: 0 auto; /* Center container in its parent */  
+      footer {
+        margin-top: 20px;
+        text-align: center;
+      }
+      .logo {
+        position: absolute;
+        top: auto;
+        left: 8px;
+        width: 250px; /* Set the desired width to a larger size */
+        height: auto; /* Maintain aspect ratio */
+      }
+      #result .alert {
+        width: 300px; /* Set width for the square container */
+        height: 300px; /* Set fixed height to create a square shape */
+        display: flex;
+        flex-direction: column; /* Align items in column */
+        justify-content: center; /* Center content vertically */
+        align-items: center; /* Center content horizontally */
+        text-align: center; /* Center text */
+        border: 2px solid #007bff; /* Define border style */
+        border-radius: 8px; /* Style edges with rounded corners */
+        background-color: #f8f9fa; /* Light background color for contrast */
+        margin: 0 auto; /* Center container in its parent */
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/user/profile">Profile</a>
+      <a href="/user/ticket">Ticket</a>
+    </nav>
+    <header>
+      <img src="../images/parkuy2.png" alt="Parking Logo" class="logo" />
+    </header>
+    <div class="container">
+      <h1>Find Parking Lot Nearby</h1>
+      <h1 class="typing" id="typing-text"></h1>
 
-}
-    </style>  
-</head>  
-<body>  
-    <nav>  
-        <a href="/">Home</a>  
-        <a href="/user/profile">Profile</a>  
-        <a href="/user/ticket">Ticket</a>  
-    </nav>  
-
-    <div class="container">  
-        <h1>Parking Dashboard</h1>  
-        <h1 class="typing" id="typing-text"></h1>  
-        
-        <form id="locationForm">  
-            <div class="input-group">  
-                <input type="text" id="location" required placeholder="e.g., Cibaduyut, Bandung" />   
-                <button type="submit">Find</button>  
-            </div>  
-        </form>  
-
-        <div id="map"></div>  
-        
-        <div id="result" class="mt-4" style="display: none;">  
-            <div class="alert alert-info text-center" role="alert" style="border-radius: 8px; width: 300px; margin: 0 auto;">   
-                <p id="resultText"></p> <!-- Add placeholder for distance text -->  
-                <a id="directionsBtn" href="#" class="btn btn-primary" target="_blank">Get Directions</a>  
-            </div>  
+      <form id="locationForm">
+        <div class="input-group">
+          <input
+            type="text"
+            id="location"
+            required
+            placeholder="e.g., Cibaduyut, Bandung"
+          />
+          <button type="submit">Find</button>
         </div>
-        <ul>  
-            <% parkingLots.forEach(lot => { %>  
-                <li>  
-                    <strong><%= lot.name %></strong> -   
-                    <span><%= lot.motorcycleAvailableSpot %> motorcycle spots available</span> |   
-                    <span><%= lot.carAvailableSpot %> car spots available</span>  
-                    <form action="/book" method="POST">  
-                        <input type="hidden" name="parkingLotId" value="<%= lot.id %>" />  
-                        <input type="hidden" name="userId" value="<%= userId %>" />  
-        
-                        <label for="vehicleType">Vehicle Type:</label>  
-                        <select name="vehicleType" id="vehicleType" required>  
-                            <option value="motorcycle">Motorcycle</option>  
-                            <option value="car">Car</option>  
-                        </select>  
-        
-                        <label for="startTime">Start Time:</label>  
-                        <input type="datetime-local" id="startTime" name="startTime" required />  
-        
-                        <label for="endTime">End Time:</label>  
-                        <input type="datetime-local" id="endTime" name="endTime" required />  
-        
-                        <button type="submit">Book</button>  
-                    </form>  
-                </li>  
-            <% }); %>  
-        </ul>  
-    </div>  
+      </form>
 
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>  
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>  
-    <script>  
-        function getDistanceBetweenPoints(lat1, lon1, lat2, lon2) {  
-            const R = 6371; // Earth radius in kilometers  
-            const dLat = degreesToRadians(lat2 - lat1);  
-            const dLon = degreesToRadians(lon2 - lon1);  
-            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +  
-                      Math.cos(degreesToRadians(lat1)) * Math.cos(degreesToRadians(lat2)) *  
-                      Math.sin(dLon / 2) * Math.sin(dLon / 2);  
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));  
-            return R * c; // Distance in kilometers  
-        }  
+      <div id="map"></div>
 
-        function degreesToRadians(degrees) {  
-            return degrees * (Math.PI / 180);  
-        }  
+      <div id="result" class="mt-4" style="display: none">
+        <div
+          class="alert alert-info text-center"
+          role="alert"
+          style="border-radius: 8px; width: 300px; margin: 0 auto"
+        >
+          <p id="resultText"></p>
+          <!-- Add placeholder for distance text -->
+          <a id="directionsBtn" href="#" class="btn btn-primary" target="_blank"
+            >Get Directions</a
+          >
+        </div>
+      </div>
+      <ul>
+        <% parkingLots.forEach(lot => { %>
+        <li>
+          <strong><%= lot.name %></strong> -
+          <span
+            ><%= lot.motorcycleAvailableSpot %> motorcycle spots available</span
+          >
+          |
+          <span><%= lot.carAvailableSpot %> car spots available</span>
+          <form action="/book" method="POST">
+            <input type="hidden" name="parkingLotId" value="<%= lot.id %>" />
+            <input type="hidden" name="userId" value="<%= userId %>" />
 
-        const parkingLots = [  
-            <% parkingLots.forEach(lot => { %>  
-                { id: <%= lot.id %>, name: '<%= lot.name %>', latitude: <%= lot.latitude %>, longitude: <%= lot.longitude %> },  
-            <% }); %>  
-        ];  
+            <label for="vehicleType">Vehicle Type:</label>
+            <select name="vehicleType" id="vehicleType" required>
+              <option value="motorcycle">Motorcycle</option>
+              <option value="car">Car</option>
+            </select>
 
-        const map = L.map('map').setView([-6.903889, 107.576389], 12);  
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {  
-            maxZoom: 19,  
-            attribution: '© OpenStreetMap contributors'  
-        }).addTo(map);  
+            <label for="startTime">Start Time:</label>
+            <input
+              type="datetime-local"
+              id="startTime"
+              name="startTime"
+              required
+            />
 
-        parkingLots.forEach(lot => {  
-            L.marker([lot.latitude, lot.longitude])  
-                .addTo(map)  
-                .bindPopup(lot.name);  
-        });  
+            <label for="endTime">End Time:</label>
+            <input type="datetime-local" id="endTime" name="endTime" required />
 
-        document.getElementById('locationForm').addEventListener('submit', function(e) {  
-            e.preventDefault();  
-            const location = document.getElementById('location').value;  
-            findNearestParking(location);  
-        });  
+            <button type="submit">Book</button>
+          </form>
+        </li>
+        <% }); %>
+      </ul>
+    </div>
 
-        async function findNearestParking(location) {  
-    const apiKey = '00e706971665492fb55b82a71c48c6e7';  
-    const geocodeUrl = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(location)}&key=${apiKey}`;  
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+              function getDistanceBetweenPoints(lat1, lon1, lat2, lon2) {
+                  const R = 6371; // Earth radius in kilometers
+                  const dLat = degreesToRadians(lat2 - lat1);
+                  const dLon = degreesToRadians(lon2 - lon1);
+                  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                            Math.cos(degreesToRadians(lat1)) * Math.cos(degreesToRadians(lat2)) *
+                            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                  return R * c; // Distance in kilometers
+              }
 
-    try {  
-        const response = await fetch(geocodeUrl);  
-        const data = await response.json();  
+              function degreesToRadians(degrees) {
+                  return degrees * (Math.PI / 180);
+              }
 
-        if (data.results.length > 0) {  
-            const userLocation = data.results[0].geometry;  
-            const userLat = userLocation.lat;  
-            const userLng = userLocation.lng;  
+              const parkingLots = [
+                  <% parkingLots.forEach(lot => { %>
+                      { id: <%= lot.id %>, name: '<%= lot.name %>', latitude: <%= lot.latitude %>, longitude: <%= lot.longitude %> },
+                  <% }); %>
+              ];
 
-            const nearestLot = findNearestParkingLot(userLat, userLng);  
-            if (nearestLot) {  
-                const distance = getDistanceBetweenPoints(userLat, userLng, nearestLot.latitude, nearestLot.longitude);  
-                
-                // Display the result using improved HTML structure  
-                document.getElementById('resultText').innerHTML = `  
-                    The nearest parking lot is <strong>${nearestLot.name}</strong>, which is   
-                    <strong>${distance.toFixed(2)}</strong> km away.  
-                `;  
-                // Update the directions link  
-                document.getElementById('directionsBtn').href = `https://www.google.com/maps/dir/?api=1&destination=${nearestLot.latitude},${nearestLot.longitude}`;  
+              const map = L.map('map').setView([-6.903889, 107.576389], 12);
+              L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                  maxZoom: 19,
+                  attribution: '© OpenStreetMap contributors'
+              }).addTo(map);
 
-                // Show the result container  
-                document.getElementById('result').style.display = 'block';  
-                map.setView([nearestLot.latitude, nearestLot.longitude], 15);  
-                L.marker([nearestLot.latitude, nearestLot.longitude]).addTo(map).bindPopup(`Nearest Lot: ${nearestLot.name}`).openPopup();  
-            } else {  
-                document.getElementById('resultText').innerHTML = 'No parking lots found nearby.';  
-                document.getElementById('result').style.display = 'block';  // Show the result as well  
-            }  
-        } else {  
-            document.getElementById('resultText').innerHTML = 'Location not found. Please try again.';  
-            document.getElementById('result').style.display = 'block';  // Show the result as well  
-        }  
-    } catch (error) {  
-        console.error('Error fetching the location:', error);  
-        document.getElementById('resultText').innerHTML = 'An error occurred while finding your location.';  
-        document.getElementById('result').style.display = 'block';  // Show the result as well  
-    }  
-}
+              parkingLots.forEach(lot => {
+                  L.marker([lot.latitude, lot.longitude])
+                      .addTo(map)
+                      .bindPopup(lot.name);
+              });
 
-        function findNearestParkingLot(userLat, userLng) {  
-            let nearestLot = null;  
-            let minDistance = Infinity;  
+              document.getElementById('locationForm').addEventListener('submit', function(e) {
+                  e.preventDefault();
+                  const location = document.getElementById('location').value;
+                  findNearestParking(location);
+              });
 
-            parkingLots.forEach(lot => {  
-                const distance = getDistanceBetweenPoints(userLat, userLng, lot.latitude, lot.longitude);  
-                if (distance < minDistance) {  
-                    minDistance = distance;  
-                    nearestLot = lot;  
-                }  
-            });  
+              async function findNearestParking(location) {
+          const apiKey = '00e706971665492fb55b82a71c48c6e7';
+          const geocodeUrl = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(location)}&key=${apiKey}`;
 
-            return nearestLot;  
-        }  
+          try {
+              const response = await fetch(geocodeUrl);
+              const data = await response.json();
 
-        // Typing effect script  
-        const typingTextElement = document.getElementById('typing-text');  
-        const typingText = "Hello, where are you going?";  
-        let i = 0;  
+              if (data.results.length > 0) {
+                  const userLocation = data.results[0].geometry;
+                  const userLat = userLocation.lat;
+                  const userLng = userLocation.lng;
 
-        function type() {  
-            if (i < typingText.length) {  
-                typingTextElement.innerHTML += typingText.charAt(i);  
-                i++;  
-                setTimeout(type, 150); // Adjust typing speed here  
-            } else {  
-                setTimeout(() => {  
-                    typingTextElement.innerHTML = '';  
-                    i = 0;  
-                    type(); // Restart typing effect  
-                }, 2000); // Delay before restarting the effect  
-            }  
-        }  
+                  const nearestLot = findNearestParkingLot(userLat, userLng);
+                  if (nearestLot) {
+                      const distance = getDistanceBetweenPoints(userLat, userLng, nearestLot.latitude, nearestLot.longitude);
 
-        type(); // Start typing effect  
-    </script>  
-</body>  
+                      // Display the result using improved HTML structure
+                      document.getElementById('resultText').innerHTML = `
+                          The nearest parking lot is <strong>${nearestLot.name}</strong>, which is
+                          <strong>${distance.toFixed(2)}</strong> km away.
+                      `;
+                      // Update the directions link
+                      document.getElementById('directionsBtn').href = `https://www.google.com/maps/dir/?api=1&destination=${nearestLot.latitude},${nearestLot.longitude}`;
+
+                      // Show the result container
+                      document.getElementById('result').style.display = 'block';
+                      map.setView([nearestLot.latitude, nearestLot.longitude], 15);
+                      L.marker([nearestLot.latitude, nearestLot.longitude]).addTo(map).bindPopup(`Nearest Lot: ${nearestLot.name}`).openPopup();
+                  } else {
+                      document.getElementById('resultText').innerHTML = 'No parking lots found nearby.';
+                      document.getElementById('result').style.display = 'block';  // Show the result as well
+                  }
+              } else {
+                  document.getElementById('resultText').innerHTML = 'Location not found. Please try again.';
+                  document.getElementById('result').style.display = 'block';  // Show the result as well
+              }
+          } catch (error) {
+              console.error('Error fetching the location:', error);
+              document.getElementById('resultText').innerHTML = 'An error occurred while finding your location.';
+              document.getElementById('result').style.display = 'block';  // Show the result as well
+          }
+      }
+
+              function findNearestParkingLot(userLat, userLng) {
+                  let nearestLot = null;
+                  let minDistance = Infinity;
+
+                  parkingLots.forEach(lot => {
+                      const distance = getDistanceBetweenPoints(userLat, userLng, lot.latitude, lot.longitude);
+                      if (distance < minDistance) {
+                          minDistance = distance;
+                          nearestLot = lot;
+                      }
+                  });
+
+                  return nearestLot;
+              }
+
+              // Typing effect script
+
+      // Typing effect script
+      const typingTextElement = document.getElementById('typing-text');
+
+      // Function to start typing effect with the user's name
+      function startTypingEffect(name) {
+          const typingText = `Hello ${name}, where are you going?`;
+          let i = 0;
+
+          function type() {
+              if (i < typingText.length) {
+                  typingTextElement.innerHTML += typingText.charAt(i);
+                  i++;
+                  setTimeout(type, 150); // Adjust typing speed here
+              } else {
+                  setTimeout(() => {
+                      typingTextElement.innerHTML = '';
+                      i = 0;
+                      type(); // Restart typing effect
+                  }, 2000); // Delay before restarting the effect
+              }
+          }
+
+          type();
+      }
+
+
+      startTypingEffect('<%= name %>'); // Insert the username dynamically
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+  </body>
 </html>
 
 <%- include ('../layouts/footer') %>
