@@ -142,6 +142,24 @@ class AdminController {
             });  
         }  
     }  
-}  
+    async getContactMessages(req, res) {  
+        try {  
+            const [results, metadata] = await sequelize.query(  
+                'SELECT cm.id, cm.name, cm.email, cm.message, cm.created_at, u.username ' +  
+                'FROM contact_messages cm ' +  
+                'JOIN users u ON cm.user_id = u.id ' +  
+                'ORDER BY cm.created_at DESC'  
+            );  
+
+            // Render the admin page with the messages data  
+            res.render('admin/messages', { messages: results });  
+        } catch (error) {  
+            console.error('Error fetching messages:', error);  
+            res.status(500).send('Internal Server Error. Please try again later.');  
+        }  
+    }  
+};  
+
+
 
 module.exports = new AdminController();

@@ -89,7 +89,7 @@ router.post('/admin/leave-parking', isAdmin, async (req, res) => {
 // 
 router.get('/admin/manage-users',  authenticateJWT, isAdmin, adminController.manageUsers);  
  
-
+router.get('/messages', authenticateJWT, isAdmin, adminController.getContactMessages);  
 router.get('/booking-details', authenticateJWT, isAdmin, adminController.bookingDetails); 
 
 module.exports = router;
