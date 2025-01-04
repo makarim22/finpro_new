@@ -111,6 +111,37 @@ class AdminController {
             res.status(500).json({ message: 'Server error' });  
         }  
     }  
+    async bookingDetails(req, res) {  
+        const { lotId } = req.query; // Get the lotId from query params  
+
+        // Validate that lotId is provided  
+        if (!lotId) {  
+            return res.status(400).send('Lot ID is required');  
+        }  
+
+        try {  
+            // Fetch the booking details for a specific parking lot  
+            const bookingsDetails = await sequelize.query(  
+                `SELECT * FROM bookings WHERE "parkingLotId" = :lotId`,  
+                {  
+                    replacements: { lotId },  
+                    type: sequelize.QueryTypes.SELECT,  
+                }  
+            );  
+
+            // Render the booking details page  
+            res.render('admin/booking-details', {  
+                bookings: bookingsDetails, // Pass the booking details to the view  
+                title: 'Booking Details',  
+            });  
+        } catch (error) {  
+            console.error('Error fetching booking details:', error);  
+            res.render('error', {  
+                message: 'Error fetching booking details',  
+                error: error.message,  
+            });  
+        }  
+    }  
 }  
 
 module.exports = new AdminController();

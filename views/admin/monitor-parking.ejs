@@ -5,11 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
     <title>Monitor Parking Spaces</title>  
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">  
+    <style>  
+        .logo {  
+            width: 250px; /* Set the desired width for the logo */  
+            height: auto; /* Maintain aspect ratio */  
+            margin-bottom: 10px; /* Space between logo and title */  
+        }  
+    </style>  
 </head>  
 <body class="bg-gray-100">  
-    <div class="container mx-auto mt-5">  
-        <h1 class="text-3xl font-bold mb-5">Monitor Parking Spaces</h1>  
-        <table class="min-w-full bg-white border border-gray-300">  
+    <div class="container mx-auto p-6">  
+        <div class="flex items-center justify-between mb-6">  
+            <img src="../images/parkuy2.png" alt="Parking Logo" class="logo" />  
+            <div class="text-center flex-1">  
+                <h1 class="text-4xl font-bold text-gray-800 mt-2">Monitor Parking Spaces</h1>  
+            </div>  
+        </div>  
+
+        <nav class="flex justify-start space-x-4 mb-6">  
+            <a href="/admin/dashboard" class="text-blue-600 hover:underline">Return Dashboard</a>  
+            <form action="/logout" method="POST" style="display:inline;">  
+                <button type="submit" class="text-blue-600 hover:underline focus:outline-none">Logout</button>  
+            </form>   
+        </nav>  
+
+        <table class="min-w-full bg-white border border-gray-300 shadow-md rounded-lg overflow-hidden">  
             <thead>  
                 <tr>  
                     <th class="border-b-2 border-gray-300 px-4 py-2">Parking Lot</th>  
@@ -21,7 +41,7 @@
             </thead>  
             <tbody>  
                 <% parkingLots.forEach(lot => { %>  
-                    <tr>  
+                    <tr class="hover:bg-gray-100 transition-colors duration-200">  
                         <td class="border-b border-gray-300 px-4 py-2"><%= lot.name %></td>  
                         <td class="border-b border-gray-300 px-4 py-2"><%= lot.motorcycle_capacity + lot.car_capacity %></td>  
                         <td class="border-b border-gray-300 px-4 py-2"><%= lot.motorcycle_available_spots %></td>  
@@ -33,12 +53,12 @@
                                     <option value="motorcycle">Motorcycle</option>  
                                     <option value="car">Car</option>  
                                 </select>  
-                                <button type="submit" class="bg-green-500 text-white px-2 py-1">Park</button>  
+                                <button type="submit" class="bg-green-500 text-white px-2 py-1 rounded">Park</button>  
                             </form>  
                             <form action="/api/admin/parking/leave" method="POST" class="inline">  
                                 <input type="hidden" name="parkingLotId" value="<%= lot.id %>">  
                                 <input type="text" name="spaceId" placeholder="Space ID" required class="border rounded px-2 py-1">  
-                                <button type="submit" class="bg-red-500 text-white px-2 py-1">Leave</button>  
+                                <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded">Leave</button>  
                             </form>  
                         </td>  
                     </tr>  

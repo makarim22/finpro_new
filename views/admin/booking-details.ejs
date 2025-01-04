@@ -1,0 +1,59 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title><%= title %></title>  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" />  
+    <style>  
+        .logo {  
+            width: 250px; /* Set the desired width for the logo */  
+            height: auto; /* Maintain aspect ratio */  
+            margin-bottom: 10px; /* Space between logo and title */  
+        }  
+    </style>  
+</head>  
+<body class="bg-gray-100">  
+    <div class="container mx-auto p-6">  
+        <div class="flex items-center justify-between mb-6">  
+            <img src="../images/parkuy2.png" alt="Parking Logo" class="logo" />  
+            <div class="text-center flex-1">  
+                <h1 class="text-4xl font-bold text-gray-800 mt-2"><%= title %></h1>  
+            </div>  
+        </div>  
+
+        <nav class="flex justify-start space-x-4 mb-6">  
+            <a href="/admin/dashboard" class="text-blue-600 hover:underline">Return Dashboard</a>  
+            <form action="/logout" method="POST" style="display:inline;">  
+                <button type="submit" class="text-blue-600 hover:underline focus:outline-none">Logout</button>  
+            </form>   
+        </nav>  
+
+        <section class="mt-8">  
+            <h2 class="text-xl mb-3">Booking Details</h2>  
+            <table class="min-w-full bg-white border border-gray-300 shadow-md rounded-lg overflow-hidden">  
+                <thead class="bg-gray-200">  
+                    <tr>  
+                        <th class="border-b-2 border-gray-300 px-4 py-2 text-left text-gray-700">Booking ID</th>  
+                        <th class="border-b-2 border-gray-300 px-4 py-2 text-left text-gray-700">User ID</th>  
+                        <th class="border-b-2 border-gray-300 px-4 py-2 text-left text-gray-700">Parking Lot ID</th>  
+                        <th class="border-b-2 border-gray-300 px-4 py-2 text-left text-gray-700">Total Cost</th>  
+                        <th class="border-b-2 border-gray-300 px-4 py-2 text-left text-gray-700">Booking Date</th>  
+                    </tr>  
+                </thead>  
+                <tbody class="text-gray-600">  
+                    <% bookings.forEach(booking => { %>  
+                        <tr class="hover:bg-gray-100 transition-colors duration-200">  
+                            <td class="border-b border-gray-300 px-4 py-3"><%= booking.id %></td>  
+                            <td class="border-b border-gray-300 px-4 py-3"><%= booking.userId %></td>  
+                            <td class="border-b border-gray-300 px-4 py-3"><%= booking.parkingLotId %></td>  
+                            <td class="border-b border-gray-300 px-4 py-3">$<%= booking.totalCost.toFixed(2) %></td>  
+                            <td class="border-b border-gray-300 px-4 py-3"><%= new Date(booking.createdAt).toLocaleDateString() %></td>  
+                        </tr>  
+                    <% }); %>  
+                </tbody>  
+            </table>  
+        </section>  
+    </div>  
+</body>  
+</html>
