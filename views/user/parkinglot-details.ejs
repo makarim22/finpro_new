@@ -1,0 +1,53 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Available Parking Lots</title>  
+    <!-- Bootstrap CSS via CDN -->  
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">  
+    <style>  
+        .card-img-top {  
+            height: 300px; /* Set the desired height for all images */  
+            object-fit: cover; /* Ensures the aspect ratio is maintained and fills the space */  
+        }  
+    </style>  
+</head>  
+<body>  
+    <div class="text-center">  
+        <a href="/user/dashboard" class="block mt-5 text-blue-500 hover:underline">Back to Dashboard</a>  
+    </div>  
+    <div class="container mt-5">  
+        <h1 class="text-center">Available Parking Lots</h1>  
+        <div class="row">  
+            <% parkingLots.forEach(lot => { %>  
+                <div class="col-md-4 mb-4">  
+                    <div class="card">  
+                        <img src="<%= lot.photo %>" class="card-img-top" alt="<%= lot.name %>">  
+                        <div class="card-body">  
+                            <h5 class="card-title"><%= lot.name %></h5>  
+                            <p class="card-text"><strong>Address:</strong> <%= lot.address %></p>  
+                            <p><strong>Opening Time:</strong> <%= lot.openingTime %> </p>  
+                            <p><strong>Closing Time:</strong> <%= lot.closingTime %> </p>  
+                            <p><strong>Rating:</strong> <%= lot.rating %> ⭐</p>  
+ 
+                            <hr>  
+                            <h6>Reviews:</h6>  
+                            <ul class="list-group">  
+                                <% lot.reviews.forEach(review => { %>  
+                                    <li class="list-group-item"><%= review %></li>  
+                                <% }); %>  
+                            </ul>  
+                        </div>  
+                    </div>  
+                </div>  
+            <% }); %>  
+        </div>  
+    </div>  
+
+    <!-- Bootstrap JS via CDN (with dependencies Popper.js and jQuery) -->  
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>  
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>  
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>  
+</body>  
+</html>

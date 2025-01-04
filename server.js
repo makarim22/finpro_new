@@ -58,6 +58,10 @@ app.use('/', userRoutes);// Add the profile routes here
 app.use(express.static('public'));
 sequelize.sync({ alter: true }); // This will adjust the models to match the database schema
 
+app.use((err, req, res, next) => {  
+    console.error(err.stack); // Log the stack trace for debugging  
+    res.status(500).render('error', { message: 'An error occurred' }); // Render a generic error page  
+});  
 // Start the server  
 app.listen(PORT, async () => {  
     try {  
@@ -68,19 +72,3 @@ app.listen(PORT, async () => {
     }  
 });
  
-// const syncModels = require("./initModels"); // Adjust path if needed  
-
-
-// const startServer = async () => {  
-//     try {  
-//         await syncModels(); // Sync database and models  
-//         const PORT = process.env.PORT || 3001;  
-//         app.listen(PORT, () => {  
-//             console.log(`Server is running on http://localhost:${PORT}`);  
-//         });  
-//     } catch (error) {  
-//         console.error("Error starting server:", error);  
-//     }  
-// };  
-
-// startServer();
