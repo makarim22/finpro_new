@@ -6,6 +6,7 @@ const { dashboard } = require('../controllers/parkingController');
 const ticketController = require('../controllers/ticketController');
 const parkingLotDetailsController = require('../controllers/parkingLotDetailsController'); 
 const pagesController = require('../controllers/pagesController');  
+const faqController = require('../controllers/faqController'); 
 const router = express.Router();  
 
 router.get('/user/dashboard', authenticateJWT, isUser, dashboard);
@@ -16,10 +17,10 @@ router.get('/parkinglot-details', authenticateJWT, isUser, parkingLotDetailsCont
 // Route for About Page  
 router.get('/about', authenticateJWT, isUser, pagesController.getAboutPage);  
 
-// Route for Contact Page  
-router.get('/contact', authenticateJWT, isUser, pagesController.getContactPage);  
-
-// Handles POST request from the contact form  
+// Route for Contact Page   
+router.get('/faq', authenticateJWT, isUser, faqController.getFaqPage);  
+// contact page
+router.get('/contact', authenticateJWT, isUser, pagesController.getContactPage);   
 router.post('/contact', authenticateJWT, isUser, pagesController.handleContactForm);  
 // router.get('/user/ticket:id', authenticateJWT, isUser, dashboard);
 module.exports = router;  

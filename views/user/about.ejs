@@ -1,40 +1,91 @@
 <!DOCTYPE html>  
 <html lang="en">  
+
 <head>  
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
     <title>About Us - Parking Lot Application</title>  
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">  
+    <style>  
+        body {  
+            background-color: #f8f9fa; /* Light background color for better contrast */  
+        }  
+
+        h1, h2 {  
+            color: #0056b3; /* A consistent color for headers for better branding */  
+        }  
+
+        .card {  
+            transition: transform 0.3s; /* Animation on hover */  
+        }  
+
+        .card:hover {  
+            transform: scale(1.05); /* Scale effect on hover */  
+        }  
+
+        .video-responsive {  
+            overflow: hidden;  
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */  
+            position: relative;  
+            height: 0;  
+        }  
+
+        .video-responsive iframe {  
+            position: absolute;  
+            top: 0;  
+            left: 0;  
+            width: 100%;  
+            height: 100%;  
+        }  
+
+        footer {  
+            margin-top: 40px;  
+            padding: 20px 0;  
+            background-color: #343a40;  
+            color: white;  
+        }  
+    </style>  
 </head>  
+
 <body>  
     <div class="container mt-5">  
         <h1 class="text-center">About Us</h1>  
-        
+
         <section class="mt-4">  
             <h2>Our History</h2>  
-            <p>The Parking Lot Application was developed in [Year]...</p>  
+            <p>The Parking Lot Application was developed in <b>2024</b> to address the growing challenges of parking in urban areas...</p>  
         </section>  
-        
+
         <section class="mt-4">  
             <h2>Our Goals</h2>  
             <ul>  
-                <li>To simplify the parking process...</li>  
+                <li>To simplify the parking process and relieve congestion...</li>  
+                <li>To enhance user experience through innovative technology...</li>  
+                <li>To provide real-time parking availability updates...</li>  
             </ul>  
         </section>  
-        
+
         <section class="mt-4">  
             <h2>Our Vision</h2>  
-            <p>Our vision is to create a smarter, more efficient parking system...</p>  
+            <p>Our vision is to create a smarter, more efficient parking system that simplifies the lives of drivers...</p>  
+        </section>  
+
+        <!-- Video Embed Section -->  
+        <section class="mt-5">  
+            <h2 class="text-center">Watch Our Company Profile</h2>  
+            <div class="video-responsive">  
+                <iframe src="https://www.youtube.com/embed/uUhLbMQaOAo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>  
+            </div>  
         </section>  
 
         <!-- Founder Card Section -->  
         <section class="mt-5 text-center">  
             <h2>Meet Our Founder</h2>  
-            <div class="card" style="width: 18rem; margin: auto;">  
+            <div class="card mb-4" style="width: 18rem; margin: auto;">  
                 <img src="/images/jaka.jpeg" class="card-img-top" alt="Founder Picture">  
                 <div class="card-body">  
                     <h5 class="card-title">Makarim Muhammad</h5>  
-                    <p class="card-text">Mr. Makarim is the visionary behind the Parking Lot Application, committed to revolutionizing the way we manage parking.</p>  
+                    <p class="card-text">Mr. Makarim is the visionary behind the Parkuy, committed to revolutionizing the parking industry.</p>  
                 </div>  
             </div>  
         </section>  
@@ -43,5 +94,14 @@
             <a href="/user/dashboard" class="btn btn-primary">Back to Dashboard</a>  
         </div>  
     </div>  
+
+    <footer class="text-center">  
+        <p>&copy; 2025 Parking Lot Application. All Rights Reserved.</p>  
+    </footer>  
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>  
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>  
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>  
 </body>  
+
 </html>

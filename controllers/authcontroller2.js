@@ -3,68 +3,68 @@ const bcrypt = require('bcrypt');
 const sequelize = require('../config/database');  
 const jwt = require('jsonwebtoken'); 
 const JWT_SECRET = 'your_jwt_secret';
-exports.register = async (req, res) => {  
-    const { username, password, email, role } = req.body;  
+// exports.register = async (req, res) => {  
+//     const { username, password, email, role } = req.body;  
 
-    // Validate input  
-    if (!username || !password || !email || !role) {  
-        return res.render('register', { error: 'All fields are required.' });  
-    }  
+//     // Validate input  
+//     if (!username || !password || !email || !role) {  
+//         return res.render('register', { error: 'All fields are required.' });  
+//     }  
 
-    // Check if the user already exists  
-    const [existingUser] = await sequelize.query(`  
-        SELECT * FROM users WHERE username = :username  
-    `, {  
-        replacements: { username },  
-        type: sequelize.QueryTypes.SELECT  
-    });  
+//     // Check if the user already exists  
+//     const [existingUser] = await sequelize.query(`  
+//         SELECT * FROM users WHERE username = :username  
+//     `, {  
+//         replacements: { username },  
+//         type: sequelize.QueryTypes.SELECT  
+//     });  
 
-    if (existingUser) {  
-        return res.render('register', { error: 'Username already exists' });  
-    }  
+//     if (existingUser) {  
+//         return res.render('register', { error: 'Username already exists' });  
+//     }  
 
-    // Map role to roleId  
-    let roleId;  
-    switch (role) {  
-        case 'user':  
-            roleId = 1;  
-            break;  
-        case 'admin':  
-            roleId = 2;  
-            break;  
-        case 'superadmin':  
-            roleId = 3;  
-            break;  
-        default:  
-            return res.render('register', { error: 'Invalid role selected' });  
-    }  
+//     // Map role to roleId  
+//     let roleId;  
+//     switch (role) {  
+//         case 'user':  
+//             roleId = 1;  
+//             break;  
+//         case 'admin':  
+//             roleId = 2;  
+//             break;  
+//         case 'superadmin':  
+//             roleId = 3;  
+//             break;  
+//         default:  
+//             return res.render('register', { error: 'Invalid role selected' });  
+//     }  
 
-    // Hash the password  
-    const hashedPassword = await bcrypt.hash(password, 10);  
-    const currentTimestamp = new Date(); // Get the current timestamp  
+//     // Hash the password  
+//     const hashedPassword = await bcrypt.hash(password, 10);  
+//     const currentTimestamp = new Date(); // Get the current timestamp  
 
-try {  
-    await sequelize.query(`  
-        INSERT INTO users (username, password, email, "roleId", "createdAt", "updatedAt")   
-        VALUES (:username, :password, :email, :roleId, :createdAt, :updatedAt)  
-    `, {  
-        replacements: {  
-            username,  
-            password: hashedPassword,  
-            email,  
-            roleId,  
-            createdAt: currentTimestamp,  
-            updatedAt: currentTimestamp // Set both createdAt and updatedAt to current timestamp  
-        },  
-        type: sequelize.QueryTypes.INSERT  
-    });  
+// try {  
+//     await sequelize.query(`  
+//         INSERT INTO users (username, password, email, "roleId", "createdAt", "updatedAt")   
+//         VALUES (:username, :password, :email, :roleId, :createdAt, :updatedAt)  
+//     `, {  
+//         replacements: {  
+//             username,  
+//             password: hashedPassword,  
+//             email,  
+//             roleId,  
+//             createdAt: currentTimestamp,  
+//             updatedAt: currentTimestamp // Set both createdAt and updatedAt to current timestamp  
+//         },  
+//         type: sequelize.QueryTypes.INSERT  
+//     });  
 
-        res.redirect('/login'); // Redirect to login after successful registration  
-    } catch (error) {  
-        console.error('Error creating user:', error);  
-        res.render('register', { error: 'Registration failed. Please try again.' });  
-    }  
-};  
+//         res.redirect('/login'); // Redirect to login after successful registration  
+//     } catch (error) {  
+//         console.error('Error creating user:', error);  
+//         res.render('register', { error: 'Registration failed. Please try again.' });  
+//     }  
+// };  
 // exports.login = async (req, res) => {  
 //     const { username, password } = req.body;  
 
@@ -194,6 +194,294 @@ try {
 //         return res.status(500).send('Server error');  
 //     }  
 // };
+
+// exports.register = async (req, res) => {  
+//     const { username, password, email, role } = req.body;  
+
+//     // Validate input  
+//     if (!username || !password || !email || !role) {  
+//         return res.render('register', { error: 'All fields are required.' });  
+//     }  
+
+//     // Check if the user already exists  
+//     const [existingUser] = await sequelize.query(`  
+//         SELECT * FROM users WHERE username = :username  
+//     `, {  
+//         replacements: { username },  
+//         type: sequelize.QueryTypes.SELECT  
+//     });  
+
+//     if (existingUser) {  
+//         return res.render('register', { error: 'Username already exists' });  
+//     }  
+
+//     // Validate email format  
+//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Simple regex for email validation  
+//     if (!emailRegex.test(email)) {  
+//         return res.render('register', { error: 'Invalid email format.' });  
+//     }  
+
+//     // Validate password strength  
+//     const passwordStrengthRegex = /^(?=.*[!@#\$%\^\&*\)\(+=._-]).{6,}$/; // At least 6 characters and one special character  
+//     if (!passwordStrengthRegex.test(password)) {  
+//         return res.render('register', { error: 'Password must be at least 6 characters long and contain at least one special character.' });  
+//     }  
+
+//     // Map role to roleId  
+//     let roleId;  
+//     switch (role) {  
+//         case 'user':  
+//             roleId = 1;  
+//             break;  
+//         case 'admin':  
+//             roleId = 2;  
+//             break;  
+//         case 'superadmin':  
+//             roleId = 3;  
+//             break;  
+//         default:  
+//             return res.render('register', { error: 'Invalid role selected' });  
+//     }  
+
+//     // Hash the password  
+//     const hashedPassword = await bcrypt.hash(password, 10);  
+//     const currentTimestamp = new Date(); // Get the current timestamp  
+
+//     try {  
+//         await sequelize.query(`  
+//             INSERT INTO users (username, password, email, "roleId", "createdAt", "updatedAt")   
+//             VALUES (:username, :password, :email, :roleId, :createdAt, :updatedAt)  
+//         `, {  
+//             replacements: {  
+//                 username,  
+//                 password: hashedPassword,  
+//                 email,  
+//                 roleId,  
+//                 createdAt: currentTimestamp,  
+//                 updatedAt: currentTimestamp // Set both createdAt and updatedAt to current timestamp  
+//             },  
+//             type: sequelize.QueryTypes.INSERT  
+//         });  
+
+//         res.redirect('/login'); // Redirect to login after successful registration  
+//     } catch (error) {  
+//         console.error('Error creating user:', error);  
+//         res.render('register', { error: 'Registration failed. Please try again.' });  
+//     }  
+// };
+
+// exports.register = async (req, res) => {  
+//     const { username, password, email, role } = req.body;  
+
+//     // Validate input  
+//     if (!username || !password || !email || !role) {  
+//         return res.status(400).json({ error: 'All fields are required.' });  
+//     }  
+
+//     // Check if the user already exists  
+//     const [existingUser] = await sequelize.query(`  
+//         SELECT * FROM users WHERE username = :username  
+//     `, {  
+//         replacements: { username },  
+//         type: sequelize.QueryTypes.SELECT  
+//     });  
+
+//     if (existingUser) {  
+//         return res.status(400).json({ error: 'Username already exists' });  
+//     }  
+
+//     // Validate email format  
+//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Simple regex for email validation  
+//     if (!emailRegex.test(email)) {  
+//         return res.status(400).json({ error: 'Invalid email format.' });  
+//     }  
+
+//     // Validate password strength  
+//     const passwordStrengthRegex = /^(?=.*[!@#\$%\^\&*\)\(+=._-]).{6,}$/; // At least 6 characters and one special character  
+//     if (!passwordStrengthRegex.test(password)) {  
+//         return res.status(400).json({ error: 'Password must be at least 6 characters long and contain at least one special character.' });  
+//     }  
+
+//     // Map role to roleId  
+//     let roleId;  
+//     switch (role) {  
+//         case 'user':  
+//             roleId = 1;  
+//             break;  
+//         case 'admin':  
+//             roleId = 2;  
+//             break;  
+//         case 'superadmin':  
+//             roleId = 3;  
+//             break;  
+//         default:  
+//             return res.status(400).json({ error: 'Invalid role selected' });  
+//     }  
+
+//     // Hash the password  
+//     const hashedPassword = await bcrypt.hash(password, 10);  
+//     const currentTimestamp = new Date(); // Get the current timestamp  
+
+//     try {  
+//         await sequelize.query(`  
+//             INSERT INTO users (username, password, email, "roleId", "createdAt", "updatedAt")  
+//             VALUES (:username, :password, :email, :roleId, :createdAt, :updatedAt)  
+//         `, {  
+//             replacements: {  
+//                 username,  
+//                 password: hashedPassword,  
+//                 email,  
+//                 roleId,  
+//                 createdAt: currentTimestamp,  
+//                 updatedAt: currentTimestamp // Set both createdAt and updatedAt to current timestamp  
+//             },  
+//             type: sequelize.QueryTypes.INSERT  
+//         });  
+
+//         res.status(200).json({ success: true }); // Respond with success status  
+//     } catch (error) {  
+//         console.error('Error creating user:', error);  
+//         res.status(500).json({ error: 'Registration failed. Please try again.' });  
+//     }  
+// };
+
+exports.register = async (req, res) => {  
+    try {  
+        const { username, password, email, role } = req.body;  
+
+        // Validate input  
+        if (!username || !password || !email || !role) {  
+            return res.status(400).json({ success: false, error: 'All fields are required.' });  
+        }  
+
+        // Check if the username already exists  
+        const [existingUser] = await sequelize.query(`  
+            SELECT * FROM users WHERE username = :username  
+        `, {  
+            replacements: { username },  
+            type: sequelize.QueryTypes.SELECT  
+        });  
+
+        if (existingUser) {  
+            return res.status(400).json({ success: false, error: 'Username already exists' });  
+        }  
+
+        // Check if the email already exists  
+        const [existingEmail] = await sequelize.query(`  
+            SELECT * FROM users WHERE email = :email  
+        `, {  
+            replacements: { email },  
+            type: sequelize.QueryTypes.SELECT  
+        });  
+
+        if (existingEmail) {  
+            return res.status(400).json({ success: false, error: 'Email is already in use' });  
+        }  
+
+        // Validate email format  
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Simple regex for email validation  
+        if (!emailRegex.test(email)) {  
+            return res.status(400).json({ success: false, error: 'Invalid email format.' });  
+        }  
+
+        // Validate password strength  
+        const passwordStrengthRegex = /^(?=.*[!@#\$%\^\&*\)\(+=._-]).{6,}$/; // At least 6 characters and one special character  
+        if (!passwordStrengthRegex.test(password)) {  
+            return res.status(400).json({ success: false, error: 'Password must be at least 6 characters long and contain at least one special character.' });  
+        }  
+
+        // Map role to roleId  
+        let roleId;  
+        switch (role) {  
+            case 'user':  
+                roleId = 1;  
+                break;  
+            case 'admin':  
+                roleId = 2;  
+                break;  
+            case 'superadmin':  
+                roleId = 3;  
+                break;  
+            default:  
+                return res.status(400).json({ success: false, error: 'Invalid role selected' });  
+        }  
+
+        // Hash the password  
+        const hashedPassword = await bcrypt.hash(password, 10);  
+        const currentTimestamp = new Date(); // Get the current timestamp  
+
+        // Insert the new user into the database  
+        await sequelize.query(`  
+            INSERT INTO users (username, password, email, "roleId", "createdAt", "updatedAt")  
+            VALUES (:username, :password, :email, :roleId, :createdAt, :updatedAt)  
+        `, {  
+            replacements: {  
+                username,  
+                password: hashedPassword,  
+                email,  
+                roleId,  
+                createdAt: currentTimestamp,  
+                updatedAt: currentTimestamp // Set both createdAt and updatedAt to current timestamp  
+            },  
+            type: sequelize.QueryTypes.INSERT  
+        });  
+
+        // Send a JSON response confirming successful registration  
+        res.status(201).json({ success: true, message: 'Registration successful! Please log in.' });  
+        
+    } catch (error) {  
+        console.error('Error during registration:', error); // Log the error for debugging  
+        res.status(500).json({ success: false, error: 'Internal Server Error. Please try again later.' }); // Send error response as JSON  
+    }  
+};
+// exports.login = async (req, res) => {  
+//     const { username, password } = req.body;  
+
+//     try {  
+//         // Use raw SQL to find the user by username and get the role  
+//         const [user] = await sequelize.query(`  
+//             SELECT u.id, u.username, u.password, r.role AS role_name  
+//             FROM users u  
+//             JOIN roles r ON u."roleId" = r.id  
+//             WHERE u.username = :username  
+//         `, {  
+//             replacements: { username },  
+//             type: sequelize.QueryTypes.SELECT,  
+//         });  
+
+//         // Check if user exists and password is correct  
+//         if (user && await bcrypt.compare(password, user.password)) {  
+//             // User authentication successful  
+//             const token = jwt.sign({   
+//                 id: user.id,   
+//                 role: user.role_name,   
+//                 username: user.username // Add the username to the token payload  
+//             }, process.env.JWT_SECRET, {  
+//                 expiresIn: '1h', // Token expiry time  
+//             });  
+
+//             // Set the token in a cookie  
+//             res.cookie('token', token, {  
+//                 httpOnly: true, // Prevent client-side access to the cookie  
+//                 secure: process.env.NODE_ENV === 'production', // Use secure cookies in production  
+//                 maxAge: 3600000, // Cookie expiration time in milliseconds (1 hour)  
+//             });  
+
+//             // Redirect based on user role  
+//             if (user.role_name === 'admin' || user.role_name === 'superadmin') {  
+//                 return res.redirect('/admin/dashboard');  
+//             } else {  
+//                 return res.redirect('/user/dashboard');  
+//             }  
+//         } else {  
+//             return res.status(401).send('Invalid credentials');  
+//         }  
+//     } catch (error) {  
+//         console.error('Login Error:', error);  
+//         return res.status(500).send('Server error');  
+//     }  
+// };
+
 exports.login = async (req, res) => {  
     const { username, password } = req.body;  
 
@@ -209,12 +497,17 @@ exports.login = async (req, res) => {
             type: sequelize.QueryTypes.SELECT,  
         });  
 
-        // Check if user exists and password is correct  
-        if (user && await bcrypt.compare(password, user.password)) {  
+        // Check if the user exists  
+        if (!user) {  
+            return res.status(401).json({ success: false, error: 'Invalid username' }); // Respond with JSON if username is invalid  
+        }  
+
+        // Check if the password is correct  
+        if (await bcrypt.compare(password, user.password)) {  
             // User authentication successful  
-            const token = jwt.sign({   
-                id: user.id,   
-                role: user.role_name,   
+            const token = jwt.sign({  
+                id: user.id,  
+                role: user.role_name,  
                 username: user.username // Add the username to the token payload  
             }, process.env.JWT_SECRET, {  
                 expiresIn: '1h', // Token expiry time  
@@ -234,11 +527,11 @@ exports.login = async (req, res) => {
                 return res.redirect('/user/dashboard');  
             }  
         } else {  
-            return res.status(401).send('Invalid credentials');  
+            return res.status(401).json({ success: false, error: 'Invalid password' }); // Respond with JSON if password is incorrect  
         }  
     } catch (error) {  
         console.error('Login Error:', error);  
-        return res.status(500).send('Server error');  
+        return res.status(500).json({ success: false, error: 'Internal Server Error. Please try again later.' }); // Respond with a JSON error message  
     }  
 };
 exports.showLoginForm = (req, res) => {  
