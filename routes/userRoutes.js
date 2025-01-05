@@ -12,7 +12,7 @@ const router = express.Router();
 router.get('/user/dashboard', authenticateJWT, isUser, dashboard);
 router.get('/ticket', authenticateJWT, isUser, ticketController.getUserTickets); 
 router.get('/parkinglot-details', authenticateJWT, isUser, parkingLotDetailsController.getAllParkingLots); 
-
+router.get('/ticket/:id', authenticateJWT, isUser, ticketController.getIndividualTicket); 
 
 // Route for About Page  
 router.get('/about', authenticateJWT, isUser, pagesController.getAboutPage);  

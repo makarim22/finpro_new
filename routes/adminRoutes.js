@@ -5,6 +5,7 @@ const sequelize = require('../config/database');
 const {  isSuperAdmin, isAdmin } = require('../middleware/authmiddleware2');  
 const { authenticateJWT } = require('../middleware/authMiddleware');
 const adminController = require('../controllers/adminController');
+const superadminController = require('../controllers/superadminController'); 
 const topUpController = require('../controllers/topUpController'); 
 const router = express.Router();  
 
@@ -91,5 +92,7 @@ router.get('/admin/manage-users',  authenticateJWT, isAdmin, adminController.man
  
 router.get('/messages', authenticateJWT, isAdmin, adminController.getContactMessages);  
 router.get('/booking-details', authenticateJWT, isAdmin, adminController.bookingDetails); 
+router.get('/superadmin', authenticateJWT, isSuperAdmin, superadminController.getSuperadminPage);
+router.post('/superadmin/delete/:id', authenticateJWT, isSuperAdmin, superadminController.deleteUserAdmin); // Add delete route // Ensure only Superadmin can access
 
 module.exports = router;

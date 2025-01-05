@@ -33,40 +33,40 @@ const User = require('../models/User');
 
 const sequelize = require('../config/database');  // Import sequelize for raw queries  
 
-exports.generateTicket = async ({ params: { id: bookingId } }, res) => {  
-    try {  
-        // Use raw SQL to get booking and parking lot details  
-        const [ticketData] = await sequelize.query(`  
-            SELECT b.id AS bookingId,   
-                   b."userId",   
-                   b."parkingLotId",   
-                   b."startTime",   
-                   b.duration,   
-                   b."totalCost",  
-                   p.name AS parkingLotName,  
-                   p.address AS parkingLotLocation  
-            FROM bookings AS b  
-            JOIN parking_lots AS p ON b."parkingLotId" = p.id  
-            WHERE b.id = :bookingId  
-        `, {  
-            replacements: { bookingId }, // Safely replace the bookingId parameter  
-            type: sequelize.QueryTypes.SELECT  
-        });  
+// exports.generateTicket = async ({ params: { id: bookingId } }, res) => {  
+//     try {  
+//         // Use raw SQL to get booking and parking lot details  
+//         const [ticketData] = await sequelize.query(`  
+//             SELECT b.id AS bookingId,   
+//                    b."userId",   
+//                    b."parkingLotId",   
+//                    b."startTime",   
+//                    b.duration,   
+//                    b."totalCost",  
+//                    p.name AS parkingLotName,  
+//                    p.address AS parkingLotLocation  
+//             FROM bookings AS b  
+//             JOIN parking_lots AS p ON b."parkingLotId" = p.id  
+//             WHERE b.id = :bookingId  
+//         `, {  
+//             replacements: { bookingId }, // Safely replace the bookingId parameter  
+//             type: sequelize.QueryTypes.SELECT  
+//         });  
 
-        // Check if the booking exists  
-        if (!ticketData) {  
-            return res.status(404).json({ message: 'Booking not found.' });  
-        }  
+//         // Check if the booking exists  
+//         if (!ticketData) {  
+//             return res.status(404).json({ message: 'Booking not found.' });  
+//         }  
 
-        // Render or send ticket data  
-        res.render('user/ticket', {  
-            ticket: ticketData  
-        });  
-    } catch (error) {  
-        console.error('Error generating ticket:', error);  
-        res.status(500).json({ message: 'Error generating ticket.' });  
-    }  
-};
+//         // Render or send ticket data  
+//         res.render('user/ticket', {  
+//             ticket: ticketData  
+//         });  
+//     } catch (error) {  
+//         console.error('Error generating ticket:', error);  
+//         res.status(500).json({ message: 'Error generating ticket.' });  
+//     }  
+// };
 
 // exports.getUserTickets = async (req, res) => {  
 //     const userId = req.userId; // Ensure you have the userId from the session  
@@ -144,11 +144,198 @@ exports.generateTicket = async ({ params: { id: bookingId } }, res) => {
 
 // 
 
+// exports.getUserTickets = async (req, res) => {  
+//     const userId = req.userId; // Get userId from session  
+//     const bookingId = req.params.id; // Get optional bookingId from params  
+//     const page = parseInt(req.query.page) || 1; // Get current page, default to 1  
+//     const limit = parseInt(req.query.limit) || 3; // Get the number of items per page, default to 5  
+//     const offset = (page - 1) * limit; // Calculate offset for SQL query  
+
+//     try {  
+//         if (bookingId) {  
+//             // If bookingId is provided, fetch the specific ticket details  
+//             const [ticketData] = await sequelize.query(`  
+//                 SELECT b.id AS bookingId,  
+//                        b."userId",  
+//                        b."parkingLotId",  
+//                        b."startTime",  
+//                        b.duration,  
+//                        b."totalCost",  
+//                        p.name AS parkingLotName,  
+//                        p.address AS parkingLotLocation  
+//                 FROM bookings AS b  
+//                 JOIN parking_lots AS p ON b."parkingLotId" = p.id  
+//                 WHERE b.id = :bookingId  
+//                 AND b."userId" = :userId  
+//             `, {  
+//                 replacements: { bookingId, userId },  
+//                 type: sequelize.QueryTypes.SELECT  
+//             });  
+
+//             if (!ticketData) {  
+//                 return res.status(404).json({ message: 'Booking not found or does not belong to this user.' });  
+//             }  
+
+//             return res.render('user/ticket', { ticket: ticketData, tickets: [] });  
+//         } else {  
+//             // Get the total number of tickets for the user  
+//             const totalTickets = await sequelize.query(`  
+//                 SELECT COUNT(*) as count   
+//                 FROM bookings   
+//                 WHERE "userId" = :userId  
+//             `, {  
+//                 replacements: { userId },  
+//                 type: sequelize.QueryTypes.SELECT  
+//             });  
+
+//             const totalPages = Math.ceil(totalTickets[0].count / limit); // Calculate total pages  
+            
+//             // Fetch tickets for the current page  
+//             const tickets = await sequelize.query(`  
+//                 SELECT b.id AS bookingId,  
+//                        b."userId",  
+//                        b."parkingLotId",  
+//                        b."startTime",  
+//                        b.duration,  
+//                        b."totalCost",  
+//                        p.name AS parkingLotName,  
+//                        p.address AS parkingLotLocation  
+//                 FROM bookings AS b  
+//                 JOIN parking_lots AS p ON b."parkingLotId" = p.id  
+//                 WHERE b."userId" = :userId  
+//                 ORDER BY b."startTime" DESC  
+//                 LIMIT :limit OFFSET :offset  
+//             `, {  
+//                 replacements: { userId, limit, offset },  
+//                 type: sequelize.QueryTypes.SELECT  
+//             });  
+
+//             // Render the tickets view with pagination information  
+//             return res.render('user/ticket', { tickets, ticket: null, page, totalPages, limit });  
+//         }  
+//     } catch (error) {  
+//         console.error('Error fetching tickets:', error);  
+//         return res.status(500).json({ message: 'Error fetching tickets.' });  
+//     }  
+// };
+
+// exports.getUserTickets = async (req, res) => {  
+//     const userId = req.userId; // Get userId from session  
+//     const bookingId = req.params.id; // Get optional bookingId from params  
+//     const page = parseInt(req.query.page) || 1; // Get current page, default to 1  
+//     const limit = parseInt(req.query.limit) || 3; // Get the number of items per page, default to 3  
+//     const offset = (page - 1) * limit; // Calculate offset for SQL query  
+
+//     try {  
+//         if (bookingId) {  
+//             // If bookingId is provided, fetch the specific ticket details  
+//             const [ticketData] = await sequelize.query(`  
+//                 SELECT b.id AS bookingId,  
+//                        b."userId",  
+//                        b."parkingLotId",  
+//                        b."startTime",  
+//                        b.duration,  
+//                        b."totalCost",  
+//                        p.name AS parkingLotName,  
+//                        p.address AS parkingLotLocation  
+//                 FROM bookings AS b  
+//                 JOIN parking_lots AS p ON b."parkingLotId" = p.id  
+//                 WHERE b.id = :bookingId  
+//                 AND b."userId" = :userId  
+//             `, {  
+//                 replacements: { bookingId, userId },  
+//                 type: sequelize.QueryTypes.SELECT  
+//             });  
+
+//             if (!ticketData) {  
+//                 return res.render('user/ticket', { error: 'Booking not found or does not belong to this user.', tickets: [] });  
+//             }  
+
+//             return res.render('user/ticket', { ticket: ticketData, tickets: [], error: null });  
+//         } else {  
+//             // Get the total number of tickets for the user  
+//             const totalTickets = await sequelize.query(`  
+//                 SELECT COUNT(*) as count   
+//                 FROM bookings   
+//                 WHERE "userId" = :userId  
+//             `, {  
+//                 replacements: { userId },  
+//                 type: sequelize.QueryTypes.SELECT  
+//             });  
+
+//             const totalPages = Math.ceil(totalTickets[0].count / limit); // Calculate total pages  
+            
+//             // Fetch tickets for the current page  
+//             const tickets = await sequelize.query(`  
+//                 SELECT b.id AS bookingId,  
+//                        b."userId",  
+//                        b."parkingLotId",  
+//                        b."startTime",  
+//                        b.duration,  
+//                        b."totalCost",  
+//                        p.name AS parkingLotName,  
+//                        p.address AS parkingLotLocation  
+//                 FROM bookings AS b  
+//                 JOIN parking_lots AS p ON b."parkingLotId" = p.id  
+//                 WHERE b."userId" = :userId  
+//                 ORDER BY b."startTime" DESC  
+//                 LIMIT :limit OFFSET :offset  
+//             `, {  
+//                 replacements: { userId, limit, offset },  
+//                 type: sequelize.QueryTypes.SELECT  
+//             });  
+
+//             // Render the tickets view with pagination information  
+//             return res.render('user/ticket', { tickets, ticket: null, page, totalPages, limit, error: null });  
+//         }  
+//     } catch (error) {  
+//         console.error('Error fetching tickets:', error);  
+//         // Render the ticket view with an error message in case of an exception  
+//         return res.render('user/ticket', { error: 'Error fetching tickets.', tickets: [] });  
+//     }  
+// };
+exports.getIndividualTicket = async (req, res) => {  
+    const userId = req.userId; // Get userId from session  
+    const bookingId = req.params.id; // Get bookingId from params  
+
+    try {  
+        // Fetch the specific ticket details based on bookingId  
+        const [ticketData] = await sequelize.query(`  
+            SELECT b.id AS bookingId,  
+                   b."userId",  
+                   b."parkingLotId",  
+                   b."startTime",  
+                   b.duration,  
+                   b."totalCost",  
+                   p.name AS parkingLotName,  
+                   p.address AS parkingLotLocation  
+            FROM bookings AS b  
+            JOIN parking_lots AS p ON b."parkingLotId" = p.id  
+            WHERE b.id = :bookingId  
+            AND b."userId" = :userId  
+        `, {  
+            replacements: { bookingId, userId },  
+            type: sequelize.QueryTypes.SELECT  
+        });  
+
+        // Check if no ticket data is found  
+        if (!ticketData) {  
+            return res.render('error', { message: 'Ticket not found or does not belong to this user.', error: 'Booking ID: ' + bookingId });  
+        }  
+
+        // Render the individual ticket details view  
+        return res.render('user/individual-ticket', { ticket: ticketData, error: null });  
+    } catch (error) {  
+        console.error('Error fetching individual ticket:', error);  
+        return res.render('error', { message: 'Error fetching ticket details.', error: error.message });  
+    }   
+};
+
 exports.getUserTickets = async (req, res) => {  
     const userId = req.userId; // Get userId from session  
     const bookingId = req.params.id; // Get optional bookingId from params  
     const page = parseInt(req.query.page) || 1; // Get current page, default to 1  
-    const limit = parseInt(req.query.limit) || 3; // Get the number of items per page, default to 5  
+    const limit = parseInt(req.query.limit) || 3; // Get the number of items per page, default to 3  
     const offset = (page - 1) * limit; // Calculate offset for SQL query  
 
     try {  
@@ -173,10 +360,10 @@ exports.getUserTickets = async (req, res) => {
             });  
 
             if (!ticketData) {  
-                return res.status(404).json({ message: 'Booking not found or does not belong to this user.' });  
+                return res.status(404).render('error', { message: 'Booking not found or does not belong to this user.', error: 'Booking ID: ' + bookingId });  
             }  
 
-            return res.render('user/ticket', { ticket: ticketData, tickets: [] });  
+            return res.render('user/ticket', { ticket: ticketData, tickets: [], error: null });  
         } else {  
             // Get the total number of tickets for the user  
             const totalTickets = await sequelize.query(`  
@@ -211,10 +398,10 @@ exports.getUserTickets = async (req, res) => {
             });  
 
             // Render the tickets view with pagination information  
-            return res.render('user/ticket', { tickets, ticket: null, page, totalPages, limit });  
+            return res.render('user/ticket', { tickets, ticket: null, page, totalPages, limit, error: null });  
         }  
     } catch (error) {  
         console.error('Error fetching tickets:', error);  
-        return res.status(500).json({ message: 'Error fetching tickets.' });  
+        return res.render('error', { message: 'Error fetching tickets.', error: error.message });  
     }  
 };

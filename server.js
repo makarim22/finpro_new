@@ -15,6 +15,7 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 const userRoutes = require('./routes/userRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const {isAdmin} = require ('./middleware/authmiddleware2')
+const errorHandler = require('./middleware/errorHandler');  
 const ticketRoutes = require('./routes/ticketRoutes'); //const userRoutes = require('./routes/user');  
 const cors = require('cors');  
 require('dotenv').config();  
@@ -58,6 +59,7 @@ app.use('/', userRoutes);// Add the profile routes here
 app.use(express.static('public'));
 sequelize.sync({ alter: true }); // This will adjust the models to match the database schema
 
+app.use(errorHandler);  
 app.use((err, req, res, next) => {  
     console.error(err.stack); // Log the stack trace for debugging  
     res.status(500).render('error', { message: 'An error occurred' }); // Render a generic error page  

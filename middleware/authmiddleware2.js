@@ -45,6 +45,7 @@ const isAdmin = (req, res, next) => {
 };  
 
 const isSuperAdmin = (req, res, next) => {  
+    console.log('Role check middleware hit'); 
     console.log('User role in isSuperAdmin middleware:', req.userRole); // Debugging log  
     if (req.userRole === 'superadmin') {  
         return next();  // Proceed if role is superadmin  

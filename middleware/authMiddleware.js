@@ -62,6 +62,7 @@ const jwt = require('jsonwebtoken');
 
 
 exports.authenticateJWT = (req, res, next) => {  
+    console.log('Authentication middleware hit'); 
     const token = req.cookies.token; // Retrieve the token from cookies  
     if (!token) {  
         return res.status(401).json({ message: 'Token missing' });  

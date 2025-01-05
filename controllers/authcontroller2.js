@@ -482,6 +482,58 @@ exports.register = async (req, res) => {
 //     }  
 // };
 
+// exports.login = async (req, res) => {  
+//     const { username, password } = req.body;  
+
+//     try {  
+//         // Use raw SQL to find the user by username and get the role  
+//         const [user] = await sequelize.query(`  
+//             SELECT u.id, u.username, u.password, r.role AS role_name  
+//             FROM users u  
+//             JOIN roles r ON u."roleId" = r.id  
+//             WHERE u.username = :username  
+//         `, {  
+//             replacements: { username },  
+//             type: sequelize.QueryTypes.SELECT,  
+//         });  
+
+//         // Check if the user exists  
+//         if (!user) {  
+//             return res.status(401).json({ success: false, error: 'Invalid username' }); // Respond with JSON if username is invalid  
+//         }  
+
+//         // Check if the password is correct  
+//         if (await bcrypt.compare(password, user.password)) {  
+//             // User authentication successful  
+//             const token = jwt.sign({  
+//                 id: user.id,  
+//                 role: user.role_name,  
+//                 username: user.username // Add the username to the token payload  
+//             }, process.env.JWT_SECRET, {  
+//                 expiresIn: '1h', // Token expiry time  
+//             });  
+
+//             // Set the token in a cookie  
+//             res.cookie('token', token, {  
+//                 httpOnly: true, // Prevent client-side access to the cookie  
+//                 secure: process.env.NODE_ENV === 'production', // Use secure cookies in production  
+//                 maxAge: 3600000, // Cookie expiration time in milliseconds (1 hour)  
+//             });  
+
+//             // Redirect based on user role  
+//             if (user.role_name === 'admin' || user.role_name === 'superadmin') {  
+//                 return res.redirect('/admin/dashboard');  
+//             } else {  
+//                 return res.redirect('/user/dashboard');  
+//             }  
+//         } else {  
+//             return res.status(401).json({ success: false, error: 'Invalid password' }); // Respond with JSON if password is incorrect  
+//         }  
+//     } catch (error) {  
+//         console.error('Login Error:', error);  
+//         return res.status(500).json({ success: false, error: 'Internal Server Error. Please try again later.' }); // Respond with a JSON error message  
+//     }  
+// };
 exports.login = async (req, res) => {  
     const { username, password } = req.body;  
 
@@ -499,7 +551,8 @@ exports.login = async (req, res) => {
 
         // Check if the user exists  
         if (!user) {  
-            return res.status(401).json({ success: false, error: 'Invalid username' }); // Respond with JSON if username is invalid  
+            // Render login page with error message  
+            return res.render('login', { error: 'Invalid username' });  
         }  
 
         // Check if the password is correct  
@@ -527,11 +580,13 @@ exports.login = async (req, res) => {
                 return res.redirect('/user/dashboard');  
             }  
         } else {  
-            return res.status(401).json({ success: false, error: 'Invalid password' }); // Respond with JSON if password is incorrect  
+            // Render login page with error message  
+            return res.render('login', { error: 'Invalid password' });  
         }  
     } catch (error) {  
         console.error('Login Error:', error);  
-        return res.status(500).json({ success: false, error: 'Internal Server Error. Please try again later.' }); // Respond with a JSON error message  
+        // Render login page with generic error message  
+        return res.render('login', { error: 'Internal Server Error. Please try again later.' });  
     }  
 };
 exports.showLoginForm = (req, res) => {  
