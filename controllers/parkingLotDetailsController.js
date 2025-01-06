@@ -13,6 +13,8 @@ const parkingLots = [
         photo: '/images/p9.jpg',  
         openingTime: '06:00 AM',  
         closingTime: '10:00 PM',  
+        motorcycle_tariff: 3000,  
+        car_tariff: 9000, 
         rating: 4.2,  
         reviews: [  
             "Great location in the city center!",  
@@ -31,6 +33,8 @@ const parkingLots = [
         photo: '/images/p10.jpg',  
         openingTime: '24 Hours',  
         closingTime: 'N/A',  
+        motorcycle_tariff: 3000,  
+        car_tariff: 9000, 
         rating: 4.5,  
         reviews: [  
             "Convenient location for travelers.",  
@@ -49,6 +53,8 @@ const parkingLots = [
         photo: '/images/p11.jpg',  
         openingTime: '08:00 AM',  
         closingTime: '11:00 PM',  
+        motorcycle_tariff: 3000,  
+        car_tariff: 9000, 
         rating: 4.0,  
         reviews: [  
             "Best place to park when visiting the theme park.",  
@@ -67,6 +73,8 @@ const parkingLots = [
         photo: '/images/p13.jpg',  
         openingTime: '07:00 AM',  
         closingTime: '09:00 PM',  
+        motorcycle_tariff: 3000,  
+        car_tariff: 9000, 
         rating: 4.3,  
         reviews: [  
             "Easy access for students and faculty.",  
@@ -85,6 +93,8 @@ const parkingLots = [
         photo: '/images/p12.jpg',  
         openingTime: '09:00 AM',  
         closingTime: '10:00 PM',  
+        motorcycle_tariff: 3000,  
+        car_tariff: 9000, 
         rating: 4.6,  
         reviews: [  
             "Perfect spot for shopping nearby.",  

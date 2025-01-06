@@ -82,6 +82,11 @@
         .badge:hover {  
             transform: scale(1.05);  
         }  
+        .badge-icon {  
+    width: 30px; /* Set width */  
+    height: auto; /* Maintain aspect ratio */  
+    margin-left: 5px; /* Space between badge text and image */  
+}
         .badge img {  
             width: 20px; /* Adjust icon size */  
             height: 20px; /* Adjust icon size */  
@@ -109,19 +114,33 @@
                 
                 <!-- Awards & Badges Section -->  
                 <h6>Awards & Badges:</h6>  
-                <div>  
+                <div class="d-flex flex-wrap align-items-center">  
                     <% if (bookingCount >= 50) { %>  
-                        <span class="badge">Elite Customer</span>  
-                    <% } else if (bookingCount >= 25) { %>  
-                        <span class="badge">Legendary Customer</span>  
-                    <% } else if (bookingCount >= 10) { %>  
-                        <span class="badge">Loyal Customer</span>  
-                    <% } else if (bookingCount >= 5) { %>  
-                        <span class="badge">Frequent Customer</span>  
-                    <% } else if (bookingCount >= 1) { %>  
-                        <span class="badge">Newbie</span>  
+                        
+                        <img src="/images/elite-icon.png" alt="Elite Customer Badge" class="badge-icon">  
+                        <span class="badge me-2">Elite Customer</span>  
                     <% } %>  
-                </div>  
+                    <% if (bookingCount >= 25) { %>  
+                        
+                        <img src="/images/legendary-icon.png" alt="Legendary Customer Badge" class="badge-icon"> 
+                        <span class="badge me-2">Legendary Customer</span>   
+                    <% } %>  
+                    <% if (bookingCount >= 10) { %>  
+                      
+                        <img src="/images/loyal-icon.png" alt="Loyal Customer Badge" class="badge-icon"> 
+                        <span class="badge me-2">Loyal Customer</span>   
+                    <% } %>  
+                    <% if (bookingCount >= 5) { %>  
+                        
+                        <img src="/images/frequent-icon.png" alt="Frequent Customer Badge" class="badge-icon">  
+                        <span class="badge me-2">Frequent Customer</span>  
+                    <% } %>  
+                    <% if (bookingCount >= 1) { %>  
+                        
+                        <img src="/images/newbie-icon.png" alt="Newbie Badge" class="badge-icon">  
+                        <span class="badge me-2">Newbie</span>  
+                    <% } %>  
+                </div>
 
                 <!-- Profile Picture Upload Section -->  
                 <h6>Upload Your Profile Picture:</h6>  
