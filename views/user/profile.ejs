@@ -20,20 +20,39 @@
             border-radius: 15px 15px 0 0; /* Rounded top corners */  
             padding: 20px;  
             text-align: center;  
+            position: relative; /* Allows absolute positioning of child elements */  
         }  
         .profile-header h1 {  
             margin: 0;  
+            font-size: 2.5rem;  
         }  
-        .logout-btn {  
-            background-color: #dc3545; /* Bootstrap danger color */  
+        .profile-header p {  
+            font-size: 1.2rem;  
+            margin-top: 10px;  
+        }  
+        .profile-picture {  
+            position: absolute; /* Position the profile picture */  
+            top: 20px; /* Adjust to position at the top */  
+            right: 20px; /* Adjust to position at the right */  
+            width: 100px; /* Set a fixed width for proper display */  
+            height: 100px; /* Set a fixed height for proper display */  
+            border-radius: 50%; /* Makes the image round */  
+            object-fit: cover; /* Ensures the image covers the entire area */  
+            border: 2px solid white; /* Optional: Add a border */  
+        }  
+        .btn-custom {  
+            background-color: #007bff; /* Bootstrap primary color */  
             border: none;  
             border-radius: 5px;  
             padding: 10px 20px;  
             font-size: 16px;  
-            transition: background-color 0.3s;  
+            width: 150px; /* Same width for buttons */  
+            transition: background-color 0.3s, transform 0.2s;  
+            color: white; /* Ensure text is readable */  
         }  
-        .logout-btn:hover {  
-            background-color: #c82333; /* Darker red on hover */  
+        .btn-custom:hover {  
+            background-color: #0056b3; /* Darker blue on hover */  
+            transform: scale(1.05); /* Slightly grow on hover */  
         }  
         .total-info {  
             margin-top: 15px;  
@@ -47,6 +66,27 @@
             background-color: #007bff; /* Branding color for table header */  
             color: white; /* White text for contrast */  
         }  
+        tfoot th {  
+            background-color: #f1f1f1; /* Light grey for footer */  
+        }  
+        .badge {  
+            display: inline-block;  
+            background-color: #007bff;  
+            color: white;  
+            padding: 5px 10px;  
+            border-radius: 20px;  
+            font-size: 14px;  
+            margin: 5px;  
+            transition: transform 0.3s;  
+        }  
+        .badge:hover {  
+            transform: scale(1.05);  
+        }  
+        .badge img {  
+            width: 20px; /* Adjust icon size */  
+            height: 20px; /* Adjust icon size */  
+            margin-right: 5px; /* Space between icon and text */  
+        }  
     </style>  
 </head>  
 
@@ -55,6 +95,8 @@
         <div class="profile-header">  
             <h1>Profile</h1>  
             <p>Welcome back, <%= user.username %>!</p>  
+            <!-- Placeholder for the profile picture -->  
+            <img id="profilePicture" src="" alt="Profile Picture" class="profile-picture" style="display: none;">  
         </div>  
 
         <!-- Profile Information Card -->  
@@ -64,6 +106,31 @@
                 <p><strong>Username:</strong> <%= user.username %></p>  
                 <p><strong>Email:</strong> <%= user.email %></p>  
                 <p><strong>Coin Balance:</strong> <%= user.coins %> Coins</p>  
+                
+                <!-- Awards & Badges Section -->  
+                <h6>Awards & Badges:</h6>  
+                <div>  
+                    <% if (bookingCount >= 50) { %>  
+                        <span class="badge">Elite Customer</span>  
+                    <% } else if (bookingCount >= 25) { %>  
+                        <span class="badge">Legendary Customer</span>  
+                    <% } else if (bookingCount >= 10) { %>  
+                        <span class="badge">Loyal Customer</span>  
+                    <% } else if (bookingCount >= 5) { %>  
+                        <span class="badge">Frequent Customer</span>  
+                    <% } else if (bookingCount >= 1) { %>  
+                        <span class="badge">Newbie</span>  
+                    <% } %>  
+                </div>  
+
+                <!-- Profile Picture Upload Section -->  
+                <h6>Upload Your Profile Picture:</h6>  
+                <form id="uploadForm">  
+                    <div class="mb-3">  
+                        <input type="file" class="form-control" id="imageInput" accept=".jpg" required>  
+                    </div>  
+                    <button type="button" class="btn btn-custom" onclick="showProfilePicture()">Upload</button>  
+                </form>  
             </div>  
         </div>  
 
@@ -77,12 +144,10 @@
                     <label for="parkingLotFilter" class="form-label">Filter by Parking Lot:</label>  
                     <select id="parkingLotFilter" class="form-select">  
                         <option value="">All</option>  
-                        <%   
-                            const parkingLots = new Set();   
-                            recentBookings.forEach(booking => parkingLots.add(booking.parkinglotname));  
-                            parkingLots.forEach(lot => {   
-                        %>  
-                            <option value="<%= lot %>"><%= lot %></option>  
+                        <% const parkingLots = new Set();   
+                           recentBookings.forEach(booking => parkingLots.add(booking.parkinglotname));  
+                           parkingLots.forEach(lot => { %>  
+                        <option value="<%= lot %>"><%= lot %></option>  
                         <% }); %>  
                     </select>  
                 </div>  
@@ -113,7 +178,7 @@
                                 </tr>  
                                 <% totalAmountPaid += booking.totalCost || 0;  
                                    totalDuration += booking.duration;  
-                                }) %>  
+                                }); %>  
                         <% } else { %>  
                             <tr>  
                                 <td colspan="6" class="text-center">No recent bookings found.</td>  
@@ -136,34 +201,63 @@
             </div>  
         </div>  
 
-        <div class="text-center">  
+        <div class="text-center mb-5">  
             <form action="/logout" method="POST" style="display:inline;">  
-                <button type="submit" class="btn logout-btn">Logout</button>  
+                <button type="submit" class="btn btn-custom">Logout</button>  
             </form>  
             <form action="/user/dashboard" method="GET" style="display:inline;">  
-                <button type="submit" class="btn dashboard-btn">Dashboard</button>  
+                <button type="submit" class="btn btn-custom">Dashboard</button>  
             </form>  
         </div>  
 
         <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>  
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>  
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>  
-        
-        <script>  
-        // Filter functionality for the parking lot name  
-        $(document).ready(function() {  
-            $('#parkingLotFilter').on('change', function() {  
-                var filterValue = $(this).val();  
-                $('#bookingTable tbody tr.booking-row').each(function() {  
-                    if (filterValue === "" || $(this).data('parking-lot') === filterValue) {  
-                        $(this).show();  
-                    } else {  
-                        $(this).hide();  
-                    }  
-                });  
+
+        <script>   
+    function showProfilePicture() {  
+        const fileInput = document.getElementById('imageInput');  
+        const profilePicture = document.getElementById('profilePicture');  
+
+        // Check if a file is selected  
+        if (fileInput.files && fileInput.files[0]) {  
+            const reader = new FileReader();  
+            
+            reader.onload = function(e) {  
+                profilePicture.src = e.target.result; // Set the src to the uploaded image  
+                profilePicture.style.display = 'block'; // Show the image  
+
+                // Save the image data to local storage  
+                localStorage.setItem('profilePicture', e.target.result);  
+            }  
+            reader.readAsDataURL(fileInput.files[0]); // Read the uploaded file  
+        }  
+    }  
+
+    // On page load, check if there is a profile picture in local storage  
+    window.onload = function() {  
+        const savedImage = localStorage.getItem('profilePicture');  
+        if (savedImage) {  
+            const profilePicture = document.getElementById('profilePicture');  
+            profilePicture.src = savedImage; // Set the src to the saved image  
+            profilePicture.style.display = 'block'; // Show the image  
+        }  
+    }  
+
+    // Filter functionality for the parking lot name   
+    $(document).ready(function() {  
+        $('#parkingLotFilter').on('change', function() {  
+            var filterValue = $(this).val();  
+            $('#bookingTable tbody tr.booking-row').each(function() {  
+                if (filterValue === "" || $(this).data('parking-lot') === filterValue) {  
+                    $(this).show();  
+                } else {  
+                    $(this).hide();  
+                }  
             });  
         });  
-        </script>  
+    });  
+</script>
     </div>  
 </body>  
 </html>

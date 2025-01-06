@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
     <title>Your Tickets</title>  
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">  
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <style>  
         /* Styles for the Ticket */  
         .ticket {  
@@ -20,8 +21,20 @@
         .ticket:hover {  
             transform: scale(1.02);  
         }  
+        .logo {
+        position : left;
+        top: 8px;
+        left: 8px;
+        width: 250px; /* Set the desired width to a larger size */
+        height: 180px; /* Maintain aspect ratio */
+      }
     </style>  
 </head>  
+<div class="text-left mt-5">  
+    <a href="/user/dashboard">  
+        <img src="/images/parkuy2.png" class="logo" >  
+    </a>  
+</div>  
 <body class="bg-gray-100">  
     <div class="container mx-auto">  
         <h1 class="text-3xl font-bold text-center my-5">My Tickets</h1>  
@@ -76,10 +89,11 @@
             <p class="text-center">No tickets found for this user.</p>  
         <% } %>  
 
-        <div class="text-center">  
-            <!-- <a href="/user/profile" class="block mt-5 text-blue-500 hover:underline">Back to Profile</a>  -->
-            <a href="/user/dashboard" class="block mt-5 text-blue-500 hover:underline">Back to Dashboard</a>  
+        <div class="text-center mt-5">  
+            <a href="/user/dashboard" class="btn btn-primary">Back to Dashboard</a>  
         </div>  
+    </div>  
+
     </div>  
 
     <!-- Include JsBarcode Library -->  

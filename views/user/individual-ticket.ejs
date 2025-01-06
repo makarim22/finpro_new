@@ -56,7 +56,7 @@
         document.addEventListener("DOMContentLoaded", function() {  
             const bookingId = "<%= ticket ? ticket.bookingid : '' %>";  
             const userName = "<%= ticket ? ticket.userid : '' %>";  
-            const bookingDate = "<%= ticket ? new Date(ticket.startTime).toLocaleDateString() : '' %>";  
+            const bookingDate = "<%= ticket ? new Date(ticket.starttime).toLocaleDateString() : '' %>";  
 
             // Generate Barcode using JsBarcode  
             if (bookingId && userName && bookingDate) {  
